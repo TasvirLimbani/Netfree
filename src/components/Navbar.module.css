@@ -1,0 +1,114 @@
+.navMargin {
+    margin-top: 80px;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #111;
+    z-index: 10;
+    box-sizing: border-box;
+}
+
+.logo {
+    width: 100px;
+    object-fit: contain;
+    cursor: pointer;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.dropdown {
+    position: absolute;
+    top: 70px;
+    right: 10px;
+    width: 270px !important;
+    background: #2b2b2bd6;
+    border-radius: 8px;
+    color: white;
+    padding: 15px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    display: block;
+    text-align: center;
+    width: 250px;
+}
+
+.dropdown img {
+    height: 60px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.nname {
+    margin: 0;
+    padding: 4px 0;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 600;
+}
+.emmaill{
+    font-size: 14px ;
+    cursor: pointer;
+}
+
+.dropdown button {
+    margin-top: 20px;
+    background: #FF4742;
+    border: 1px solid #FF4742;
+    border-radius: 6px;
+    box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-family: nunito, roboto, proxima-nova, "proxima nova", sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    outline: 0;
+    padding: 6px 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+}
+
+.dropdown button:hover,
+.dropdown button:active {
+    background-color: initial;
+    background-position: 0 0;
+    color: #FF4742;
+}
+
+.dropdown button:active {
+    opacity: .5;
+}
+
+@media screen and (max-width: 600px) {
+    .navMargin {
+        margin-top: 53px;
+    }
+
+    .nav {
+        padding: 12px 20px;
+    }
+
+    .logo {
+        width: 80px;
+    }
+
+    .avatar {
+        width: 28px;
+        height: 28px;
+    }
+}

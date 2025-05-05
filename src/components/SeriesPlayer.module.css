@@ -1,0 +1,93 @@
+
+.season_select {
+    margin-top: 30px;
+    width: 250px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #000000;
+    background-color: rgb(53, 53, 53);
+    color: white;
+    transition: all 0.3s ease;
+    /* appearance: none; */
+    cursor: pointer;
+}
+
+.season_select:focus {
+    outline: none;
+    /* border-color: #007bff; */
+    background-color: rgb(53, 53, 53);
+    color: white;
+}
+
+.season_select option {
+    font-size: 14px;
+    padding: 5px;
+}
+
+.epList {
+    margin-top: 30px;
+}
+
+.epRow {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+.epImg {
+    width: 20%;
+}
+
+.epImg img {
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+}
+
+.epDetail {
+    width: 65%;
+}
+
+.epDetail h3 {
+    font-size: 24px;
+    margin-bottom: 7px;
+}
+
+.epDetail h4 {
+    font-size: 24px;
+    margin-bottom: 7px;
+}
+
+.epTime {
+    color: grey;
+    font-size: 13px;
+}
+
+.epDescrip {
+    color: grey;
+    width: 85%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* Limits to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.epBtn {
+    width: 15%;
+    align-self: center;
+}
+
+.epBtn button {
+    padding: 10px 15px;
+    font-size: 17.5px;
+    font-weight: 900;
+    background-color: rgb(53, 53, 53);
+    color: white;
+    border-radius: 10px;
+    border: 0;
+    cursor: pointer;
+}
