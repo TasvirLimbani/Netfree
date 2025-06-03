@@ -1,6 +1,8 @@
 import Slider from 'react-slick';
 import React, { useEffect, useState } from 'react';
 import Style from './Banner.module.css';
+import NavBar from './NavBar';
+import { Link } from 'react-router-dom';
 
 
 const Banner = ({ homeApi }) => {
@@ -34,30 +36,33 @@ const Banner = ({ homeApi }) => {
     };
 
     if (!slidData) {
-        return <div>Loading...</div>;
+        return <div></div>;
     }
 
     return (
-        <div className={ Style.BanMain }>
-            <Slider { ...settings }>
-                { slidData.map((movie, index) => (
-                    <div className={ Style.sliderWrapper } key={ movie.id || index }>
-                        <header
-                            className={ `${Style.banner} ${index === 1 ? Style.bannerSecond : ''}` }
-                            style={ {
-                                backgroundImage: `url("${movie.img}")`,
-                            } }
-                        >
-                            <div className={ Style.content }>
-                                <img className={ Style.logo } src={ movie.namelogo } alt="Movie Logo" />
-                                <p className={ Style.description }>{ movie.desc }</p>
-                            </div>
-                            <div className={ Style.fadeBottom } />
-                        </header>
-                    </div>
-                )) }
-            </Slider>
-        </div>
+        <>
+            <NavBar />
+            <div className={ Style.BanMain }>
+                <Slider { ...settings }>
+                    { slidData.map((movie, index) => (
+                        <Link to={ `/movie/${movie.id}` } className={ Style.sliderWrapper } key={ movie.id || index }>
+                            <header
+                                className={ `${Style.banner} ${index === 1 ? Style.bannerSecond : ''}` }
+                                style={ {
+                                    backgroundImage: `url("${movie.img}")`,
+                                } }
+                            >
+                                <div className={ Style.content }>
+                                    <img className={ Style.logo } src={ movie.namelogo } alt="Movie Logo" />
+                                    <p className={ Style.description }>{ movie.desc }</p>
+                                </div>
+                                <div className={ Style.fadeBottom } />
+                            </header>
+                        </Link>
+                    )) }
+                </Slider>
+            </div>
+        </>
     );
 };
 

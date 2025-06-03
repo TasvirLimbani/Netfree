@@ -25,7 +25,7 @@
 
 .banner {
     color: white;
-    object-fit: contain;
+    object-fit: cover;
     height: 550px;
     width: 100%;
     overflow: hidden;
@@ -42,6 +42,7 @@
 .sliderWrapper {
     overflow-x: hidden;
     width: 100%;
+    text-decoration: none;
 }
 
 .content {
@@ -81,6 +82,7 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     width: 40%;
+    text-decoration: none;
 }
 
 

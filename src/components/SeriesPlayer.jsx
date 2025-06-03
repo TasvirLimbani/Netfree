@@ -1,197 +1,238 @@
-// import React, { useState, useEffect, useRef } from "react";
-// import { useLocation } from "react-router-dom";
-// import Style from './SeriesPlayer.module.css'
-// import Hls from "hls.js"; // import hls.js
+import Hls from "hls.js";
+import Plyr from "plyr";
+import "plyr/dist/plyr.css";
+import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
+import Style from './Movieplay.module.css';
 
-// const SeriesPlayer = () => {
-//     const location = useLocation();
-//     const { id } = location.state || {};
+function SeriesPlayer() {
+    const location = useLocation();
+    const { id, languages = [] } = location.state || {};
 
-//     const audioRef = useRef(null);
-//     const videoRef = useRef(null);
+    const videoRef = useRef(null);
+    const audioRef = useRef(null);
+    const [player, setPlayer] = useState(null);
+    const [hls, setHls] = useState(null);
+    const [isVideoPaused, setIsVideoPaused] = useState(true);
+    const [showHoverButton, setShowHoverButton] = useState(false);
 
-//     const [movieApi, setMovieApi] = useState(null);  // Default to null instead of an empty string
-//     const [episodeApi, setEpisodeApi] = useState('');
-//     const [seriesDetails, setSeriesDetails] = useState(null);
-//     const [seasons, setSeasons] = useState([]);
-//     const [selectedSeasonId, setSelectedSeasonId] = useState('');
-//     const [episodes, setEpisodes] = useState([]);
-//     const [canPlay, setCanPlay] = useState(false);
+    const qualities = [1080, 720, 480];
+    const hideButtonTimeout = useRef(null);
 
+    const hasAudio = Array.isArray(languages) && languages.length > 1;
 
-//     // const audioUrl = `https://s10.nm-cdn2.top/files/${id}/a/0/0.m3u8`;
-//     // const videoUrl = `https://s10.nm-cdn2.top/files/${id}/720p/-720p.m3u8`;
-//     useEffect(() => {
-//         const apis = JSON.parse(localStorage.getItem('apis'));
-//         if (apis) {
-//             setMovieApi(apis.DetailsApi);  // Set the movie API URL
-//             setEpisodeApi(apis.EpisodeApi);  // Set the episode API URL
-//         } else {
-//             console.error("No APIs found in localStorage.");
-//         }
-//     }, []);
+    const [selectedLangIndex, setSelectedLangIndex] = useState(() => {
+        const storedLang = sessionStorage.getItem("selectedLangIndex");
+        return storedLang !== null ? Number(storedLang) : 0;
+    });
 
-//     useEffect(() => {
-//         if (movieApi && id) {
-//             console.log("Movie API URL:", movieApi);
-//             console.log("Series ID:", id);
+    const handleLangChange = (e) => {
+        const index = Number(e.target.value);
+        setSelectedLangIndex(index);
+        sessionStorage.setItem("selectedLangIndex", index);
+    };
 
-//             const detailUrl = `${movieApi}?id=${id}`;
-//             const wrappedUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(detailUrl)}`;
-//             const fetchSeriesDetails = async () => {
-//                 try {
-//                     const response = await fetch(wrappedUrl);
-//                     if (!response.ok) {
-//                         throw new Error(`Failed to fetch series details, status: ${response.status}`);
-//                     }
-//                     const data = await response.json();
-//                     const fnldta = JSON.parse(data.contents)
-//                     setSeriesDetails(fnldta);
-//                     setSeasons(fnldta.season);
-//                     if (fnldta.season?.[0]?.id) {
-//                         setSelectedSeasonId(fnldta.season[0].id); // Auto-select first season
-//                     }
-//                 } catch (error) {
-//                     console.error("Error fetching series details:", error);
-//                 }
-//             };
+    const getSourceUrl = (quality) => {
+        return `https://s10.nm-cdn2.top/files/${id}/${quality}p/-${quality}p.m3u8`;
+    };
 
-//             fetchSeriesDetails();
-//         }
-//     }, [movieApi, id]);
+    const initHLS = (videoUrl, resumeTime = 0, shouldAutoplay = false) => {
+        const video = videoRef.current;
 
-//     useEffect(() => {
-//         if (selectedSeasonId && episodeApi) {
-//             const epUrl = `${episodeApi}?s=${selectedSeasonId}&series=${id}`;
-//             const wrappedUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(epUrl)}`;
+        if (hls) hls.destroy();
 
-//             const fetchEpisodes = async () => {
-//                 try {
-//                     const response = await fetch(wrappedUrl);
-//                     const data = await response.json();
-//                     const epData = JSON.parse(data.contents);
-//                     console.log(epData);
-//                     setEpisodes(epData.episodes);
-//                     // setEpisodes(epData);
-//                 } catch (error) {
-//                     console.error("Error fetching episodes:", error);
-//                 }
-//             };
+        const newHls = new Hls();
+        newHls.loadSource(videoUrl);
+        newHls.attachMedia(video);
 
-//             fetchEpisodes();
-//         }
-//     }, [selectedSeasonId, episodeApi, id]);
+        newHls.on(Hls.Events.MANIFEST_PARSED, () => {
+            video.currentTime = resumeTime;
+            if (shouldAutoplay) {
+                video.play().catch(() => { });
+            }
+        });
 
-//     const videoUrl = `https://s10.nm-cdn2.top/files/${episodes[0]["id"]}/720p/-720p.m3u8`;
-//     useEffect(() => {
-//         // Setup HLS for video
-//         if (videoRef.current) {
-//             if (Hls.isSupported()) {
-//                 const hls = new Hls();
-//                 hls.loadSource(videoUrl);
-//                 hls.attachMedia(videoRef.current);
-//             } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
-//                 videoRef.current.src = videoUrl;
-//             }
-//         }
+        setHls(newHls);
+    };
 
-//         // if (audioRef.current) {
-//         //     if (Hls.isSupported()) {
-//         //       const hlsAudio = new Hls();
-//         //       hlsAudio.loadSource(audioUrl);
-//         //       hlsAudio.attachMedia(audioRef.current);
-//         //     } else if (audioRef.current.canPlayType('application/vnd.apple.mpegurl')) {
-//         //       audioRef.current.src = audioUrl;
-//         //     }
-//         //   }
-//     }, [videoUrl]);
+    useEffect(() => {
+        const video = videoRef.current;
+        const audio = audioRef.current;
+        const defaultQuality = 720;
+        const source = getSourceUrl(defaultQuality);
 
-//     useEffect(() => {
-//         const handleLoadedMetadata = () => {
-//             setCanPlay(true); // Set to true once the media is ready to play
-//         };
+        const isFirstVisit = !sessionStorage.getItem("visited");
+        sessionStorage.setItem("visited", "true");
 
-//         if (videoRef.current && audioRef.current) {
-//             videoRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
-//             audioRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
-//         }
+        const syncAudioWithVideo = () => {
+            if (hasAudio && audio && Math.abs(video.currentTime - audio.currentTime) > 0.3) {
+                audio.currentTime = video.currentTime;
+            }
+        };
 
-//         return () => {
-//             if (videoRef.current && audioRef.current) {
-//                 videoRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
-//                 audioRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
-//             }
-//         };
-//     }, []);
+        const syncEvents = () => {
+            video.addEventListener("play", () => {
+                setIsVideoPaused(false);
+                if (hasAudio && audio) {
+                    audio.play().catch(() => { });
+                }
+            });
 
-//     return (
-//         <>
-//             {/* { seasons.length > 0 && (
-//                     <select
-//                         className={ Style.season_select }
-//                         value={ selectedSeasonId }
-//                         onChange={ (e) => setSelectedSeasonId(e.target.value) }
-//                     >
-//                         { seasons.map((season) => (
-//                             <option key={ season.id } value={ season.id }>
-//                                 Season { season.s }
-//                             </option>
-//                         )) }
-//                     </select>
-//                 ) }
-//                 <div className={ Style.epList }>
-//                     { episodes.map((ep) => (
-//                         <div className={ Style.epRow } key={ ep.id }>
-//                             <div className={ Style.epImg }>
-//                                 <img src={ `https://imgcdn.media/pv/720/${ep.id}.jpg` } alt="" />
-//                             </div>
-//                             <div className={ Style.epDetail }>
-//                                 <h3>{ ep.s } { ep.ep }</h3>
-//                                 <h4>{ ep.t } <span className={ Style.epTime }>({ ep.time })</span></h4>
-//                                 <p className={ Style.epDescrip }>{ ep.ep_desc }</p>
-//                                 <div style={ { display: 'flex', alignItems: 'center' } }>
-//                                     <svg
-//                                         style={ { color: 'rgb(26 152 255)', marginRight: '7px', marginTop: '10px' } }
-//                                         stroke="currentColor"
-//                                         fill="currentColor"
-//                                         strokeWidth="0"
-//                                         viewBox="0 0 512 512"
-//                                         className="text-[#1a98ff] w-[15px] h-[15px]"
-//                                         height="1em"
-//                                         width="1em"
-//                                         xmlns="http://www.w3.org/2000/svg"
-//                                     >
-//                                         <path d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>
-//                                     </svg>
-//                                     <p className={ Style.epVerify }>Included with Prime Video</p>
-//                                 </div>
-//                             </div>
-//                             <div className={ Style.epBtn }>
-//                                 <button>▶ Play Now</button>
-//                             </div>
-//                         </div>
-//                     )) }
-//                 </div>  */}
-//             <div>
-//                 <div style={ { width: '100%', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' } }>
-//                     <video
-//                         ref={ videoRef }
-//                         width="100%"
-//                         height="auto"
-//                         controls={ true }
-//                         muted
-//                     />
-//                 </div>
+            video.addEventListener("pause", () => {
+                setIsVideoPaused(true);
+                if (hasAudio && audio) audio.pause();
+            });
 
-//                 <div>
-//                     <audio
-//                         ref={ audioRef }
-//                         controls={ false }
-//                     />
-//                 </div>
-//             </div>
-//         </>
-//     );
-// };
+            video.addEventListener("seeking", () => {
+                if (hasAudio && audio) audio.currentTime = video.currentTime;
+            });
 
-// export default SeriesPlayer;
+            video.addEventListener("timeupdate", syncAudioWithVideo);
+        };
+
+        const initPlyr = () => {
+            const newPlayer = new Plyr(video, {
+                fullscreen: {
+                    enabled: true,
+                    fallback: true,
+                    allowFullscreen: true,
+                },
+                controls: [
+                    "play-large", "play", "progress", "current-time", "mute", "volume",
+                    "captions", "settings", "pip", "airplay", "fullscreen",
+                ],
+                settings: ["quality", "speed"],
+                quality: {
+                    default: defaultQuality,
+                    options: qualities,
+                    forced: true,
+                    onChange: (newQuality) => {
+                        const currentTime = video.currentTime;
+                        const newSource = getSourceUrl(newQuality);
+                        initHLS(newSource, currentTime, false);
+                    },
+                },
+                speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] },
+                tooltips: { controls: true, seek: true },
+            });
+
+            setPlayer(newPlayer);
+
+            const style = document.createElement("style");
+            style.innerHTML = `
+        .plyr {
+          width: 100% !important;
+          height: 100% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          background: black !important;
+        }
+        .plyr__video-wrapper {
+          width: 100% !important;
+          height: auto !important;
+          aspect-ratio: 16/9;
+          max-height: 100vh;
+        }
+        .plyr video {
+          width: 100% !important;
+          height: auto !important;
+          max-height: 100%;
+        }
+      `;
+            document.head.appendChild(style);
+        };
+
+        if (Hls.isSupported()) {
+            initHLS(source, 0, isFirstVisit);
+        }
+
+        initPlyr();
+        syncEvents();
+    }, [id]);
+
+    // LOAD AUDIO ON LANGUAGE CHANGE — only attach, don't autoplay
+    useEffect(() => {
+        if (!hasAudio || !audioRef.current || !videoRef.current) return;
+
+        const audio = audioRef.current;
+        const video = videoRef.current;
+
+        const newAudioUrl = `https://s10.nm-cdn2.top/files/${id}/a/${selectedLangIndex}/${selectedLangIndex}.m3u8`;
+
+        const audioHls = new Hls();
+
+        audio.pause();
+        audio.currentTime = 0;
+
+        audioHls.loadSource(newAudioUrl);
+        audioHls.attachMedia(audio);
+
+        const onParsed = () => {
+            audio.currentTime = video.currentTime;
+
+            const syncAndPlay = () => {
+                audio.currentTime = video.currentTime;
+                audio.play().catch(() => { });
+                video.removeEventListener("play", syncAndPlay);
+            };
+
+            if (!video.paused) {
+                syncAndPlay();
+            } else {
+                video.addEventListener("play", syncAndPlay);
+            }
+        };
+
+        audioHls.on(Hls.Events.MANIFEST_PARSED, onParsed);
+
+        return () => {
+            audio.pause();
+            audioHls.destroy();
+        };
+    }, [selectedLangIndex, id]);
+
+    const handleMouseMove = () => {
+        setShowHoverButton(true);
+        if (hideButtonTimeout.current) clearTimeout(hideButtonTimeout.current);
+        if (!isVideoPaused) {
+            hideButtonTimeout.current = setTimeout(() => {
+                setShowHoverButton(false);
+            }, 2000);
+        }
+    };
+
+    return (
+        <div className={ Style.movieMain } onMouseMove={ handleMouseMove }>
+            <video
+                ref={ videoRef }
+                controls
+                playsInline
+                style={ { width: "100%", height: "100%", aspectRatio: "16/9" } }
+            />
+            { hasAudio && <audio ref={ audioRef } style={ { display: "none" } } /> }
+
+            { languages.length > 0 && (
+                <div
+                    className={ `${Style.langSelectWrapper} ${showHoverButton || isVideoPaused ? Style.langSelectVisible : ""
+                        }` }
+                >
+                    <select
+                        value={ selectedLangIndex }
+                        onChange={ handleLangChange }
+                        className={ Style.selectBox }
+                    >
+                        { languages.map((lang, index) => (
+                            <option key={ index } value={ index }>
+                                { lang.l }
+                            </option>
+                        )) }
+                    </select>
+                </div>
+            ) }
+        </div>
+    );
+}
+
+export default SeriesPlayer;
+

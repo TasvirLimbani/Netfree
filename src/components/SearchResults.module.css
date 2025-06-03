@@ -1,0 +1,51 @@
+.srcResult {
+    color: white;
+    text-align: center;
+    font-size: 40px;
+    font-weight: 300;
+    margin-top: 20px;
+}
+
+.srcResult strong {
+    color: #FF4742;
+    font-weight: 900;
+}
+
+.backHome {
+    color: white;
+    margin-left: 50px;
+    cursor: pointer;
+}
+
+.resultBox {
+    padding: 2rem;
+    background-color: #141414;
+    /* min-height: 100vh; */
+    color: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.moviePoster {
+    height: 140px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+    transition: transform 0.3s;
+}
+
+.moviePoster:hover {
+    transform: scale(1.08);
+}
+@media (max-width: 500px){
+    .srcResult {
+        font-size: 27px;
+    }
+    .backHome {
+        margin-top: 20px;
+        margin-left: 10px;
+        font-size: 20px;
+    }
+}

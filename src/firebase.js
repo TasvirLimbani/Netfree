@@ -1,5 +1,5 @@
 // src/firebase.js
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
@@ -12,7 +12,9 @@ const firebaseConfig = {
     appId: "1:707360894491:web:1f5fbd7400c1e7594752be"
 };
 
-const app = initializeApp(firebaseConfig);
+// 👇 Prevent re-initializing Firebase
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 export const db = getFirestore(app);

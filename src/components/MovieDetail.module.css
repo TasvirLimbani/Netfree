@@ -37,7 +37,7 @@
 
 .main {
     width: 100%;
-    height: 75vh;
+    height: 70vh;
     position: relative;
 }
 
@@ -111,6 +111,25 @@
     transition: transform 0.2s ease;
 }
 
+.watchlistbtn {
+    background-color: rgba(66, 66, 66, 0.506);
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.watchlistbtn:hover {
+    transform: scale(1.05);
+    background-color: rgba(255, 255, 255, 0.813);
+    color: black;
+}
+
+
 .playButton:hover {
     transform: scale(1.05);
 }
@@ -169,6 +188,12 @@ hr {
     color: #aaa;
 }
 
+.zeroSpacing :global(*) {
+    margin: 0 !important;
+    padding: 0 !important;
+    margin-top: 6px !important;
+}
+
 .description {
     font-size: 1.1rem;
     margin-bottom: 20px;
@@ -176,10 +201,6 @@ hr {
     color: #ddd;
 }
 
-.epVerify {
-    margin-top: 10px;
-    font-weight: 700;
-}
 
 /* Series Episode */
 
@@ -260,6 +281,11 @@ hr {
     text-overflow: ellipsis;
 }
 
+.epVerify {
+    margin-top: 10px;
+    font-weight: 700;
+}
+
 .epBtn {
     width: 15%;
     align-self: center;
@@ -318,6 +344,10 @@ hr {
 }
 
 @media (max-width: 600px) {
+    .transNav {
+        display: none;
+    }
+
     .bannerDetail {
         margin-bottom: 20px;
     }
@@ -356,6 +386,12 @@ hr {
         font-size: 10px;
     }
 
+    .topDesc {
+        width: 230px;
+        margin-bottom: 40px;
+        font-size: 10px;
+    }
+
     .playButton {
         padding: 8px 40px;
     }
@@ -363,4 +399,52 @@ hr {
     .bottomDetails {
         padding-right: 0;
     }
+
+
+    /* EPISODES LIST    */
+
+
+    .epRow {
+        gap: 10px;
+    }
+
+    .epImg img {
+        border-radius: 10px;
+    }
+
+    .epDetail h3 {
+        font-size: 15px;
+        margin-bottom: 0px;
+    }
+
+    .epDetail h4 {
+        font-size: 15px;
+        margin-bottom: 1px;
+    }
+
+    .epTime {
+        font-size: 7px;
+    }
+
+    .epDescrip {
+        font-size: 11px;
+    }
+
+    .epVerify {
+        margin-top: 0px;
+        font-weight: 600;
+        font-size: 10px;
+    }
+
+    .epBtn {
+        width: 20%;
+    }
+
+    .epBtn button {
+        padding: 6px 6px;
+        font-size: 9px;
+        font-weight: 500;
+        border-radius: 5px;
+    }
+
 }

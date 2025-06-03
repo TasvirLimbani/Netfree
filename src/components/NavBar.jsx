@@ -5,21 +5,45 @@ import { signOut } from 'firebase/auth';
 import { Navigate } from 'react-router-dom';
 import { db } from '../FirebaseSetup'; // your firebase setup file
 import { doc, getDoc } from 'firebase/firestore';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+// import appApk from '../../public/net-free.apk'
+
 
 const NavBar = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const [open, setOpen] = useState(false);
+    const [open2, setOpen2] = useState(false);
     const dropdownRef = useRef(null);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
-    const [setUserData, setSetUserData] = useState(null)
+    const [setUserData, setSetUserData] = useState(null);
+
+    const [searchText, setSearchText] = useState('');
+    const [showSearchDialog, setShowSearchDialog] = useState(false);
+    const [searchDots, setSearchDots] = useState('');
+
+    const [loading, setLoading] = useState(false);
+
+    const isActive = (path) => location.pathname === path;
 
     const handleToggle = () => {
         setOpen(prev => !prev);
     };
+
+    const handleToggle2 = () => {
+        setOpen2(prev => !prev);
+    };
+
     const handleClickOutside = (e) => {
         if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
             setOpen(false);
         }
     };
+
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
@@ -37,7 +61,6 @@ const NavBar = () => {
 
             if (userDocSnap.exists()) {
                 const userData = userDocSnap.data();
-                // console.log('User data from Firestore:', userData);
 
                 setSetUserData(userData);
             } else {
@@ -47,10 +70,10 @@ const NavBar = () => {
             console.error('Error fetching user data:', error);
         }
     };
+
     useEffect(() => {
         fetchUserData();
     }, [])
-
 
     const handleLogout = () => {
         setIsLoggingOut(true);
@@ -65,22 +88,113 @@ const NavBar = () => {
                 setIsLoggingOut(false);
             });
     };
+
+    useEffect(() => {
+        if (!loading) return;
+
+        const dotCycle = ['.', '..', '...'];
+        let index = 0;
+
+        const interval = setInterval(() => {
+            setSearchDots(dotCycle[index]);
+            index = (index + 1) % dotCycle.length;
+        }, 400);
+
+        return () => clearInterval(interval); // Cleanup when loading stops
+    }, [loading]);
+
+
+    const handleSearch = async () => {
+        if (!searchText.trim()) return;
+
+        setLoading(true);
+
+        try {
+            const response = await fetch(`https://api.allorigins.win/get?url=https://netfree2.cc/pv/search.php?s=${searchText}`);
+            const data = await response.json();
+
+            navigate('/search', { state: { results: data } });
+        } catch (error) {
+            console.error('Search error:', error);
+            toast.error("Failed to search")
+        } finally {
+            setLoading(false); // Hide loader
+        }
+    };
+
     return (
         <>
             <div className={ Style.navMargin }>
                 <div className={ Style.nav }>
+                    <div className={ Style.leftNav }>
+                        <button className={ Style.menuIcon } onClick={ handleToggle2 }>
+                            ☰
+                        </button>
                         <img
                             className={ Style.logo }
-                            src="/assets/images/Netflix_2015_logo.svg"
+                            src="/assets/images/netfree-logo.png"
                             alt="Netflix Logo"
                         />
-                        {/* <svg style={ { color: 'white' } } class="text-white transition-all ease-in-out group-hover/grid:text-black" viewBox="0 0 24 24" height="24" width="24" role="img" aria-hidden="true"><title>Categories Remaster</title><svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-white transition-all ease-in-out group-hover/grid:text-black"><path d="M4.580 3.047 C 3.859 3.185,3.199 3.848,3.044 4.592 C 2.905 5.257,3.105 5.912,3.596 6.404 C 4.393 7.200,5.607 7.200,6.404 6.404 C 7.200 5.607,7.200 4.393,6.404 3.596 C 5.913 3.106,5.277 2.914,4.580 3.047 M11.580 3.047 C 10.859 3.185,10.199 3.848,10.044 4.592 C 9.789 5.816,10.751 7.000,12.000 7.000 C 13.080 7.000,14.000 6.080,14.000 5.000 C 14.000 4.477,13.790 3.983,13.404 3.596 C 12.913 3.106,12.277 2.914,11.580 3.047 M18.580 3.047 C 17.859 3.185,17.199 3.848,17.044 4.592 C 16.789 5.816,17.751 7.000,19.000 7.000 C 19.920 7.000,20.768 6.310,20.956 5.408 C 21.095 4.743,20.895 4.088,20.404 3.596 C 19.913 3.106,19.277 2.914,18.580 3.047 M4.580 10.047 C 4.236 10.113,3.883 10.310,3.596 10.596 C 2.800 11.393,2.800 12.607,3.596 13.404 C 4.393 14.200,5.607 14.200,6.404 13.404 C 7.200 12.607,7.200 11.393,6.404 10.596 C 5.913 10.106,5.277 9.914,4.580 10.047 M11.580 10.047 C 10.707 10.214,10.000 11.087,10.000 12.000 C 10.000 12.920,10.690 13.768,11.592 13.956 C 12.816 14.211,14.000 13.249,14.000 12.000 C 14.000 11.477,13.790 10.983,13.404 10.596 C 12.913 10.106,12.277 9.914,11.580 10.047 M18.580 10.047 C 17.707 10.214,17.000 11.087,17.000 12.000 C 17.000 12.920,17.690 13.768,18.592 13.956 C 19.816 14.211,21.000 13.249,21.000 12.000 C 21.000 11.477,20.790 10.983,20.404 10.596 C 19.913 10.106,19.277 9.914,18.580 10.047 M4.580 17.047 C 3.859 17.185,3.199 17.848,3.044 18.592 C 2.789 19.816,3.751 21.000,5.000 21.000 C 5.920 21.000,6.768 20.310,6.956 19.408 C 7.095 18.743,6.895 18.088,6.404 17.596 C 5.913 17.106,5.277 16.914,4.580 17.047 M11.580 17.047 C 10.859 17.185,10.199 17.848,10.044 18.592 C 9.789 19.816,10.751 21.000,12.000 21.000 C 13.080 21.000,14.000 20.080,14.000 19.000 C 14.000 18.477,13.790 17.983,13.404 17.596 C 12.913 17.106,12.277 16.914,11.580 17.047 M18.580 17.047 C 17.859 17.185,17.199 17.848,17.044 18.592 C 16.789 19.816,17.751 21.000,19.000 21.000 C 20.080 21.000,21.000 20.080,21.000 19.000 C 21.000 18.477,20.790 17.983,20.404 17.596 C 19.913 17.106,19.277 16.914,18.580 17.047 " fill="currentColor" stroke="none" fill-rule="evenodd"></path></svg></svg> */}
+                        <div className={ Style.navLinks }>
+                            <button className={ Style.homeBtn } style={ { color: location.pathname === '/home' ? 'red' : 'white' } } onClick={ () => navigate('/home') }>Home</button>
+                            <button className={ Style.moviebtn } style={ { color: location.pathname === '/movies' ? 'red' : 'white' } } onClick={ () => navigate('/movies') }>Movies</button>
+                            <button className={ Style.seriesBtn } style={ { color: location.pathname === '/tv-shows' ? 'red' : 'white' } } onClick={ () => navigate('/tv-shows') }>Tv-Shows</button>
+                            <button className={ Style.seriesBtn } style={ { color: location.pathname === '/watchlist' ? 'red' : 'white' } } onClick={ () => navigate('/watchlist') }>Watchlist</button>
+                            <button className={ Style.seriesBtn } style={ { color: location.pathname === '/recently' ? 'red' : 'white' } } onClick={ () => navigate('/recently') }>Recently</button>
+                        </div>
+                    </div>
+                    { open2 && (
+                        <div className={ Style.mobileMenu }>
+                            <button className={ Style.homeBtn } style={ { borderBottom: '2px solid rgb(54, 54, 54)', color: location.pathname === '/home' ? 'red' : 'white' } } onClick={ () => navigate('/home') }>Home</button>
+                            <button className={ Style.moviebtn } style={ { borderBottom: '2px solid rgb(54, 54, 54)', color: location.pathname === '/movies' ? 'red' : 'white' } } onClick={ () => navigate('/movies') }>Movies</button>
+                            <button className={ Style.seriesBtn } style={ { borderBottom: '2px solid rgb(54, 54, 54)', color: location.pathname === '/tv-shows' ? 'red' : 'white' } } onClick={ () => navigate('/tv-shows') }>Tv-Shows</button>
+                            <button className={ Style.seriesBtn } style={ { borderBottom: '2px solid rgb(54, 54, 54)', color: location.pathname === '/watchlist' ? 'red' : 'white' } } onClick={ () => navigate('/watchlist') }>Watchlist</button>
+                            <button className={ Style.seriesBtn } style={ { borderBottom: '2px solid rgb(54, 54, 54)', color: location.pathname === '/recently' ? 'red' : 'white' } } onClick={ () => navigate('/recently') }>Recently</button>
+                        </div>
+                    ) }
+
+                    <div className={ Style.navRightSec }>
+                        <a href="/net-free.apk" download>
+                            <button className={ Style.downloadBtn }>Download</button>
+                        </a>
+                        <div className={ Style.srchsec }>
+                            <FontAwesomeIcon icon={ faMagnifyingGlass } className={ Style.searchIcon }
+                                onClick={ () => setShowSearchDialog(true) } />
+                        </div>
                         <img
                             className={ Style.avatar }
                             src="/assets/images/Netflix-avatar.png"
                             alt="User Avatar"
                             onClick={ handleToggle }
                         />
+                    </div>
+                    { showSearchDialog && (
+                        <div className={ Style.searchModalOverlay }>
+                            <form onSubmit={ (e) => { e.preventDefault(); handleSearch(); } } className={ Style.searchModal }>
+                                <button
+                                    className={ Style.closeBtn }
+                                    onClick={ () => setShowSearchDialog(false) }
+                                    type='button'
+                                >
+                                    ✕
+                                </button>
+                                <input
+                                    className={ Style.searchInp }
+                                    type="text"
+                                    required
+                                    value={ searchText }
+                                    placeholder='Search here...'
+                                    onChange={ (e) => setSearchText(e.target.value) }
+                                />
+                                { loading && (
+                                    <p style={ { color: 'red', fontSize: '14px', marginTop: '4px' } }>
+                                        Searching{ searchDots }
+                                    </p>
+                                ) }
+                                <button disabled={ loading } type='submit' className={ Style.searchIcon }><FontAwesomeIcon icon={ faMagnifyingGlass } /></button>
+                            </form>
+                        </div>
+                    ) }
                     { open && (
                         <div className={ Style.dropdown }>
                             <img src="/assets/images/Netflix-avatar.png" alt="" />
@@ -90,6 +204,7 @@ const NavBar = () => {
                         </div>
                     ) }
                 </div>
+                <ToastContainer limit={ 2 } />
             </div>
         </>
     )

@@ -1,0 +1,60 @@
+/* Force Plyr wrapper and video to take full width and height */
+.plyr {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.plyr__video-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+    aspect-ratio: 16 / 9;
+    max-height: 100vh;
+}
+
+.plyr video {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 100%;
+}
+
+.movieMain {
+    width: 100% !important;
+    height: 100vh !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    position: relative;
+}
+
+.langSelectWrapper {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    /* Prevent interaction when hidden */
+}
+
+.langSelectVisible {
+    opacity: 1;
+    pointer-events: auto;
+    /* Allow interaction when visible */
+}
+
+.selectBox {
+    padding: 7px 11px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: none;
+    background: #00b2ff;
+    cursor: pointer;
+    color: white;
+    font-weight: 600;
+    outline: none;
+}

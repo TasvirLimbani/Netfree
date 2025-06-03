@@ -23,7 +23,6 @@ const Row = ({ homeApi }) => {
                     movieIds: item.ids.split(","),
                 }));
                 setLoading(false);
-
                 setGenreData(cleaned);
             })
             .catch(error => console.error("Fetch error:", error));

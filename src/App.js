@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { db } from './FirebaseSetup';
 import { auth } from './FirebaseSetup'; // Make sure to import Firebase auth
@@ -9,13 +9,18 @@ import './App.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import Banner from './components/Banner';
-import NavBar from './components/NavBar';
-import Row from './components/Row';
+
+import Home from './components/Home';
 import MovieDetail from './components/MovieDetail';
 import Movieplay from './components/Movieplay'
 import AuthModal from './components/AuthModal';
 import SeriesPlayer from './components/SeriesPlayer';
+import SearchResults from './components/SearchResults';
+import Movies from './components/Movies';
+import TvShows from './components/TvShows';
+import Watchlist from './components/Watchlist';
+import RecentlyWatched from './components/RecentlyWatched';
+
 
 function App() {
   const navigate = useNavigate();
@@ -85,6 +90,26 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    const handleContextMenu = (e) => e.preventDefault();
+    const handleKeyDown = (e) => {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+        (e.ctrlKey && e.key === 'U')
+      ) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   if (loading) {
     return <div></div>;
@@ -92,30 +117,45 @@ function App() {
 
   return (
     <>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              user ? (
+      {/* <Routes>
+        <Route path="/" element={ user ? (
               <>
-                <NavBar />
                 <Banner homeApi={ apis.HomeApi } />
                 <Row homeApi={ apis.HomeApi } />
               </>
-               ) : (
+            ) : (
               <div>Loading...</div> // If not logged in, show nothing or loading screen
             )
-            }
-          />
+          }
+        />
 
-          <Route path="/movie/:id" element={ <MovieDetail
-          // movieApi={ apis.DetailsApi } episodeApi={ apis.EpisodeApi } 
-          /> } />
-          <Route path="/watch" element={ <Movieplay /> } />
-          <Route path="/series" element={<SeriesPlayer />} />
+        <Route path="/movie/:id" element={ <MovieDetail /> } />
+        <Route path="/watch" element={ <Movieplay /> } />
+        <Route path="/series" element={ <SeriesPlayer /> } />
+        <Route path="/search" element={ <SearchResults /> } />
+        <Route path="/login" element={ <AuthModal /> } />
+      </Routes> */}
 
-          <Route path="/login" element={ <AuthModal /> } />
-        </Routes>
+      <Routes>
+        <Route path="/" element={ <Navigate to="/home" replace /> } />
+        <Route
+          path="/home"
+          element={ user ? <Home homeApi={ apis.HomeApi } /> : <Navigate to="/login" replace /> }
+        />
+
+        <Route path="/movie/:id" element={ <MovieDetail /> } />
+        <Route path="/watch" element={ <Movieplay /> } />
+        <Route path="/series" element={ <SeriesPlayer /> } />
+        <Route path="/search" element={ <SearchResults /> } />
+        <Route path="/login" element={ <AuthModal /> } />
+
+        <Route path="/movies" element={ <Movies homeApi={ apis.HomeApi } /> } />
+        <Route path="/tv-shows" element={ <TvShows homeApi={ apis.HomeApi } /> } />
+        <Route path="/watchlist" element={ <Watchlist homeApi={ apis.HomeApi } /> } />
+        <Route path="/recently" element={ <RecentlyWatched homeApi={ apis.HomeApi } /> } />
+
+      </Routes>
+
     </>
   );
 }
