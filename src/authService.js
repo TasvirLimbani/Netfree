@@ -4,7 +4,7 @@ import {
   signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 const getDeviceType = () => {
@@ -39,12 +39,16 @@ export const login = (email, password) => {
 export const loginWithGoogle = async () => {
   const res = await signInWithPopup(auth, googleProvider);
   const user = res.user;
-  await setDoc(doc(db, "users", user.uid), {
-    uid: user.uid,
-    name: user.displayName,
-    authProvider: "google",
-    email: user.email,
-  }, { merge: true }); // merge true so it doesn't overwrite if exists
+  await setDoc(
+    doc(db, "users", user.uid),
+    {
+      uid: user.uid,
+      name: user.displayName,
+      authProvider: "google",
+      email: user.email,
+    },
+    { merge: true }
+  );
 };
 
 export const forgotPassword = (email) => {
