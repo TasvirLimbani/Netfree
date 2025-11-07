@@ -14,6 +14,7 @@ import { doc, getDoc } from "firebase/firestore";
 import "./App.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import AdblockDetector from "./AdblockDetector";
 
 import Home from "./components/Home";
 import MovieDetail from "./components/MovieDetail";
@@ -142,7 +143,12 @@ function App() {
         <Route path="/search" element={ <SearchResults /> } />
         <Route path="/login" element={ <AuthModal /> } />
       </Routes> */}
-
+      <AdblockDetector
+        onChange={(isBlocked) => {
+          console.log("Adblocker detected:", isBlocked);
+          // optionally send to analytics or adjust UX
+        }}
+      />
       <Routes>
         <Route path="/" element={<Navigate to="/home" replace />} />
         <Route
