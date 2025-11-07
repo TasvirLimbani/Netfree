@@ -68,13 +68,6 @@ export default function AdblockDetector({ onChange, checkIntervalMs = 0 }) {
           </button>
          
         </div>
-        <button
-          className="adblock-close"
-          aria-label="Close"
-          onClick={handleClose}
-        >
-          ×
-        </button>
       </div>
     </div>
   );
