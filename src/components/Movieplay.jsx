@@ -3,11 +3,11 @@ import Plyr from "plyr";
 import "plyr/dist/plyr.css";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import Style from './Movieplay.module.css';
+import Style from "./Movieplay.module.css";
 
 function MediaSyncPlayer() {
   const location = useLocation();
-  const { id, languages, bucket = [] } = location.state || {};
+  const { id, languages, bucket = [], videoUrl } = location.state || {};
 
   const videoRef = useRef(null);
   const audioRef = useRef(null);
@@ -15,8 +15,6 @@ function MediaSyncPlayer() {
   const [hls, setHls] = useState(null);
   const [isVideoPaused, setIsVideoPaused] = useState(true);
   const [showHoverButton, setShowHoverButton] = useState(false);
-
-  const qualities = [1080, 720, 480];
   const hideButtonTimeout = useRef(null);
 
   const hasAudio = Array.isArray(languages) && languages.length > 1;
@@ -32,40 +30,53 @@ function MediaSyncPlayer() {
     sessionStorage.setItem("selectedLangIndex", index);
   };
 
-  const getSourceUrl = (quality) => {
-    return `https://s15.freecdn12.top/files/0GVRWVPYEWP2ISMP4M9H28TEKE/1080p/1080p.m3u8?in=f01773bde61f5a22a175424b03531e47::3556af046eba0127ae1b4420a3bbc964::1762510393::ni`;
-  };
-
   const initHLS = (videoUrl, resumeTime = 0, shouldAutoplay = false) => {
     const video = videoRef.current;
 
     if (hls) hls.destroy();
 
-    const newHls = new Hls();
-    newHls.loadSource(videoUrl);
-    newHls.attachMedia(video);
-
-    newHls.on(Hls.Events.MANIFEST_PARSED, () => {
+    // If it's an HLS URL (.m3u8), use HLS.js
+    if (videoUrl.endsWith(".m3u8")) {
+      const newHls = new Hls();
+      newHls.loadSource(videoUrl);
+      newHls.attachMedia(video);
+      newHls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.currentTime = resumeTime;
+        if (shouldAutoplay) {
+          video.play().catch(() => {});
+        }
+      });
+      setHls(newHls);
+    } else {
+      // Otherwise, play it directly (MP4, MKV, WEBM, etc.)
+      if (hls) hls.destroy();
+      video.src = videoUrl;
       video.currentTime = resumeTime;
       if (shouldAutoplay) {
-        video.play().catch(() => { });
+        video.play().catch(() => {});
       }
-    });
-
-    setHls(newHls);
+    }
   };
 
   useEffect(() => {
     const video = videoRef.current;
     const audio = audioRef.current;
     const defaultQuality = 720;
-    const source = getSourceUrl(defaultQuality);
+
+    // Use the direct URL from Firebase
+    const source =
+      videoUrl ||
+      "https://firebasestorage.googleapis.com/v0/b/tictactoe-15caa.appspot.com/o/Kantara-Chapter.1.2025.1080p.HEVC.WEB-DL.Hindi.Line-Kannada.5.1.ESub.x265-HDHub4u.Ms.mkv?alt=media&token=76cf0a61-d6a1-4c97-99ad-4f956278d9af";
 
     const isFirstVisit = !sessionStorage.getItem("visited");
     sessionStorage.setItem("visited", "true");
 
     const syncAudioWithVideo = () => {
-      if (hasAudio && audio && Math.abs(video.currentTime - audio.currentTime) > 0.3) {
+      if (
+        hasAudio &&
+        audio &&
+        Math.abs(video.currentTime - audio.currentTime) > 0.3
+      ) {
         audio.currentTime = video.currentTime;
       }
     };
@@ -74,7 +85,7 @@ function MediaSyncPlayer() {
       video.addEventListener("play", () => {
         setIsVideoPaused(false);
         if (hasAudio && audio) {
-          audio.play().catch(() => { });
+          audio.play().catch(() => {});
         }
       });
 
@@ -92,26 +103,21 @@ function MediaSyncPlayer() {
 
     const initPlyr = () => {
       const newPlayer = new Plyr(video, {
-        fullscreen: {
-          enabled: true,
-          fallback: true,
-          allowFullscreen: true,
-        },
+        fullscreen: { enabled: true, fallback: true, allowFullscreen: true },
         controls: [
-          "play-large", "play", "progress", "current-time", "mute", "volume",
-          "captions", "settings", "pip", "airplay", "fullscreen",
+          "play-large",
+          "play",
+          "progress",
+          "current-time",
+          "mute",
+          "volume",
+          "captions",
+          "settings",
+          "pip",
+          "airplay",
+          "fullscreen",
         ],
-        settings: ["quality", "speed"],
-        quality: {
-          default: defaultQuality,
-          options: qualities,
-          forced: true,
-          onChange: (newQuality) => {
-            const currentTime = video.currentTime;
-            const newSource = getSourceUrl(newQuality);
-            initHLS(newSource, currentTime, false);
-          },
-        },
+        settings: ["speed"],
         speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] },
         tooltips: { controls: true, seek: true },
       });
@@ -143,54 +149,10 @@ function MediaSyncPlayer() {
       document.head.appendChild(style);
     };
 
-    if (Hls.isSupported()) {
-      initHLS(source, 0, isFirstVisit);
-    }
-
+    initHLS(source, 0, isFirstVisit);
     initPlyr();
     syncEvents();
-  }, [id]);
-
-  // LOAD AUDIO ON LANGUAGE CHANGE — only attach, don't autoplay
-  useEffect(() => {
-    if (!hasAudio || !audioRef.current || !videoRef.current) return;
-
-    const audio = audioRef.current;
-    const video = videoRef.current;
-
-    const newAudioUrl = `${bucket}/files/${id}/a/${selectedLangIndex}/${selectedLangIndex}.m3u8`;
-
-    const audioHls = new Hls();
-
-    audio.pause();
-    audio.currentTime = 0;
-
-    audioHls.loadSource(newAudioUrl);
-    audioHls.attachMedia(audio);
-
-    const onParsed = () => {
-      audio.currentTime = video.currentTime;
-
-      const syncAndPlay = () => {
-        audio.currentTime = video.currentTime;
-        audio.play().catch(() => { });
-        video.removeEventListener("play", syncAndPlay);
-      };
-
-      if (!video.paused) {
-        syncAndPlay();
-      } else {
-        video.addEventListener("play", syncAndPlay);
-      }
-    };
-
-    audioHls.on(Hls.Events.MANIFEST_PARSED, onParsed);
-
-    return () => {
-      audio.pause();
-      audioHls.destroy();
-    };
-  }, [selectedLangIndex, id]);
+  }, [id, videoUrl]);
 
   const handleMouseMove = () => {
     setShowHoverButton(true);
@@ -203,36 +165,36 @@ function MediaSyncPlayer() {
   };
 
   return (
-    <div className={ Style.movieMain } onMouseMove={ handleMouseMove }>
+    <div className={Style.movieMain} onMouseMove={handleMouseMove}>
       <video
-        ref={ videoRef }
+        ref={videoRef}
         controls
         playsInline
-        style={ { width: "100%", height: "100%", aspectRatio: "16/9" } }
+        style={{ width: "100%", height: "100%", aspectRatio: "16/9" }}
       />
-      { hasAudio && <audio ref={ audioRef } style={ { display: "none" } } /> }
+      {hasAudio && <audio ref={audioRef} style={{ display: "none" }} />}
 
-      { languages.length > 0 && (
+      {languages?.length > 0 && (
         <div
-          className={ `${Style.langSelectWrapper} ${showHoverButton || isVideoPaused ? Style.langSelectVisible : ""
-            }` }
+          className={`${Style.langSelectWrapper} ${
+            showHoverButton || isVideoPaused ? Style.langSelectVisible : ""
+          }`}
         >
           <select
-            value={ selectedLangIndex }
-            onChange={ handleLangChange }
-            className={ Style.selectBox }
+            value={selectedLangIndex}
+            onChange={handleLangChange}
+            className={Style.selectBox}
           >
-            { languages.map((lang, index) => (
-              <option key={ index } value={ index }>
-                { lang.l }
+            {languages.map((lang, index) => (
+              <option key={index} value={index}>
+                {lang.l}
               </option>
-            )) }
+            ))}
           </select>
         </div>
-      ) }
+      )}
     </div>
   );
 }
 
 export default MediaSyncPlayer;
-
