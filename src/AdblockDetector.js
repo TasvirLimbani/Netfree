@@ -66,9 +66,7 @@ export default function AdblockDetector({ onChange, checkIntervalMs = 0 }) {
           <button className="adblock-btn primary" onClick={() => window.location.reload()}>
             I whitelisted — reload
           </button>
-          <button className="adblock-btn" onClick={handleClose}>
-            Remind me later
-          </button>
+         
         </div>
         <button
           className="adblock-close"
