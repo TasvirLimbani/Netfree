@@ -226,11 +226,17 @@ const MovieDetail = () => {
       // For series, navigate to /series page with state containing season and episode info
       navigate(`/series`, {
         state: {
-          // id,
-          season: selectedSeasonId,
-          id: episodes[0]?.id, // Pass the first episode's ID to the Series player
-          languages: epiLang,
+          id: "movie123",
+          languages: [],
+          videoUrl:
+            "https://firebasestorage.googleapis.com/v0/b/tictactoe-15caa.appspot.com/o/Kantara-Chapter.1.2025.1080p.HEVC.WEB-DL.Hindi.Line-Kannada.5.1.ESub.x265-HDHub4u.Ms.mkv?alt=media&token=76cf0a61-d6a1-4c97-99ad-4f956278d9af",
         },
+        // state: {
+        //   // id,
+        //   season: selectedSeasonId,
+        //   id: episodes[0]?.id, // Pass the first episode's ID to the Series player
+        //   languages: epiLang,
+        // },
       });
     }
   };
