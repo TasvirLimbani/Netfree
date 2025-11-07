@@ -9,7 +9,7 @@ const GenreSection = ({ title, movieIds }) => {
         const fetchMovies = async () => {
             const movieDetails = movieIds.map((id) => ({
                 id,
-                image: `https://imgcdn.media/pv/720/${id}.jpg`,
+                image: `https://imgcdn.kim/pv/341/${id}.jpg`,
             }));
             setMovies(movieDetails);
         };

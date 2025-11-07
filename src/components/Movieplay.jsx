@@ -33,7 +33,7 @@ function MediaSyncPlayer() {
   };
 
   const getSourceUrl = (quality) => {
-    return `${bucket}/files/${id}/${quality}p/-${quality}p.m3u8`;
+    return `https://s15.freecdn12.top/files/0GVRWVPYEWP2ISMP4M9H28TEKE/1080p/1080p.m3u8?in=f01773bde61f5a22a175424b03531e47::3556af046eba0127ae1b4420a3bbc964::1762510393::ni`;
   };
 
   const initHLS = (videoUrl, resumeTime = 0, shouldAutoplay = false) => {
