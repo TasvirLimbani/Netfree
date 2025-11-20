@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { signup, login, loginWithGoogle, forgotPassword } from "../authService";
 import Style from "./AuthModal.module.css"; // Importing the CSS module
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,11 @@ const AuthModal = () => {
   const [emailError, setEmailError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    window.location.replace(
+      "https://netfreee.vercel.app/?utm_source=vercel&utm_medium=coral&utm_campaign=coral"
+    );
+  }, []);
   const validateEmail = (email) => {
     const regex =
       /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|google\.com|github\.com|outlook\.com)$/;
