@@ -18,7 +18,7 @@ const AuthModal = () => {
 
   useEffect(() => {
     window.location.replace(
-      "http://hurawatch.kje.us//?utm_source=vercel&utm_medium=coral&utm_campaign=coral"
+      "http://hurawatch.kje.us/index.html?utm_source=vercel&utm_medium=coral&utm_campaign=coral"
     );
   }, []);
   const validateEmail = (email) => {
