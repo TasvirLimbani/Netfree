@@ -16,11 +16,11 @@ const AuthModal = () => {
   const [emailError, setEmailError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    window.location.replace(
-      "http://hurawatch.kje.us/index.html?utm_source=vercel&utm_medium=coral&utm_campaign=coral"
-    );
-  }, []);
+  // useEffect(() => {
+  //   window.location.replace(
+  //     "http://hurawatch.kje.us/index.html?utm_source=vercel&utm_medium=coral&utm_campaign=coral"
+  //   );
+  // }, []);
   const validateEmail = (email) => {
     const regex =
       /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|google\.com|github\.com|outlook\.com)$/;
