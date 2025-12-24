@@ -39,7 +39,7 @@ export const getImageUrl = (path: string | null, size = "w500") => {
 // const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export const fetchTrendingMovies = async (timeWindow: "day" | "week" = "week") => {
-  const response = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=ce20e7cf6328f6174905bf11f6e0ea5d&page=1`);
+  const response = await fetch(`https://api.themoviedb.org/3/trending/all/${timeWindow}?api_key=ce20e7cf6328f6174905bf11f6e0ea5d&page=1`);
   return response.json();
 };
 

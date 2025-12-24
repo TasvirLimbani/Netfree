@@ -14,7 +14,6 @@ import Link from "next/link";
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const { id } = params
 
-  console.log("Id ::::::::::::::::::::: ", id)
   const movieData = await getMovieDetails(Number(83533), "movie")
 
   if (!movieData) {
@@ -65,12 +64,20 @@ export default function MovieDetailPage({ ids }: { ids: string }) {
   const [credits, setCredits] = useState<any>(null)
   const [recommendations, setRecommendations] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [notfound, setNotfound] = useState(false)
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
         const movieData = await getMovieDetails(Number(id), type)
-        setMovie(movieData)
+
+        if (movieData.status_code === 34) {
+          setMovie(null);
+
+        }
+        else {
+          setMovie(movieData)
+        }
 
         const creditsData = await getMovieCredits(Number(id), type)
         setCredits(creditsData)
@@ -104,11 +111,39 @@ export default function MovieDetailPage({ ids }: { ids: string }) {
   }
 
   if (!movie) {
+    const router = useRouter()
+
     return (
       <main className="bg-background min-h-screen">
         <Navbar />
-        <div className="pt-20 pb-12 px-4 md:px-8 max-w-7xl mx-auto">
-          <p className="text-gray-400 text-lg">Movie not found</p>
+
+        <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
+          <div className="max-w-md w-full text-center bg-muted/40 border border-border rounded-2xl p-8 shadow-lg">
+
+            {/* Icon */}
+            <div className="text-6xl mb-4">🎬</div>
+
+            {/* Title */}
+            <h1 className="text-2xl font-semibold mb-2">
+              TV Show  Not Found
+            </h1>
+
+            {/* Description */}
+            <p className="text-gray-400 mb-6">
+              The TV Show you’re looking for doesn’t exist or has been removed.
+            </p>
+
+            {/* Go Back Button */}
+            <button
+              onClick={() => router.back()}
+              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full 
+                         bg-primary text-primary-foreground font-medium 
+                         hover:opacity-90 transition"
+            >
+              ← Go Back
+            </button>
+
+          </div>
         </div>
       </main>
     )

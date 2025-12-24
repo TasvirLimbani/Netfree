@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { AuthProvider } from "@/lib/auth-context"
 import "./globals.css"
+import DisableInspect from "@/components/DisableInspect"
+import AdBlockPopup from "@/components/AdBlockPopup"
 
 const geist = Geist({ subsets: ["latin"] })
 const geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -26,6 +28,14 @@ export const metadata: Metadata = {
     "online movies",
     "HD streaming",
   ],
+  icons: {
+    icon: [
+      { url: "/netfree-logo.png" },
+      { url: "/netfree-logo.png", sizes: "32x32", type: "image/png" },
+      { url: "/netfree-logo.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
     title: "NetFree - Free Movies & TV Shows Streaming Platform",
     description: "Watch unlimited free movies and TV shows in HD quality with personalized recommendations.",
@@ -34,12 +44,13 @@ export const metadata: Metadata = {
     siteName: "NetFree",
     images: [
       {
-        url: "https://netfree.app/og-image.png",
+        url: "/netfree-logo.png",
         width: 1200,
         height: 630,
         alt: "NetFree - Free Streaming Platform",
       },
     ],
+
   },
   twitter: {
     card: "summary_large_image",
@@ -56,7 +67,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://netfree.app",
   },
-    generator: 'v0.app'
+  generator: 'v0.app'
 }
 
 export const viewport = {
@@ -105,6 +116,8 @@ export default function RootLayout({
       <body className={`${geist.className} antialiased bg-background`}>
         <AuthProvider>{children}</AuthProvider>
         <Analytics />
+        <AdBlockPopup />
+        <DisableInspect />
       </body>
     </html>
   )

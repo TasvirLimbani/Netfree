@@ -1,28 +1,59 @@
-import type { Metadata } from "next"
-import MovieClient from "./client"
+import type { Metadata } from "next";
+import MovieClient from "./client";
+import { getMovieDetails, getImageUrl } from "@/lib/tmdb";
 
-export async function generateMetadata(
-  { params }: { params: { id: string } }
-): Promise<Metadata> {
-
-  const res = await fetch(
-    `https://api.themoviedb.org/3/tv/${params.id}?api_key=ce20e7cf6328f6174905bf11f6e0ea5d`,
-    { cache: "no-store" }
-  )
-
-  const movie = await res.json()
-
-  return {
-    title: movie.title,
-    description: movie.overview,
-    openGraph: {
-      title: movie.title,
-      description: movie.overview,
-      images: [`https://image.tmdb.org/t/p/w500${movie.poster_path}`],
-    },
-  }
+interface Params {
+  params: Promise<{ id: string }>; // <-- params is a Promise now
+  searchParams?: { type?: string };
 }
 
-export default function MoviePage({ params }: { params: { id: string } }) {
-  return <MovieClient ids={params.id}/>
+export async function generateMetadata({ params, searchParams }: Params): Promise<Metadata> {
+  const resolvedParams = await params; // <-- unwrap the Promise
+  const { id } = resolvedParams;
+  const type1 = searchParams?.type || "tv";
+
+  const movieData = await getMovieDetails(Number(id), "tv");
+
+  if (!movieData) {
+    return {
+      title: "Movie Details - NetFree",
+      description: "View movie details on NetFree free streaming platform",
+    };
+  }
+
+  const title = movieData.name || "Unknown Movie";
+  const description =
+    movieData.overview ||
+    `Watch ${title} on NetFree. Stream free movies and TV shows with HD quality. No subscription required.`;
+
+  return {
+    title: `${title} - Watch Free on NetFree | Free Streaming Movie`,
+    description: description.substring(0, 160),
+    keywords: `${title}, watch free, streaming, movie, ${movieData.genres?.map((g: any) => g.name).join(", ")}`,
+    openGraph: {
+      title: `${title} - NetFree`,
+      description: description.substring(0, 160),
+      type: "video.movie",
+      url: `https://netfree.app/tv-show/${id}`,
+      images: [
+        {
+          url: getImageUrl(movieData.poster_path),
+          width: 500,
+          height: 750,
+          alt: title,
+        },
+      ],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
+
+
+export default async function MoviePage({ params }: { params: { id: string } }) {
+  const resolvedParams = await params; // <-- unwrap the Promise
+  const { id } = resolvedParams;
+  return <MovieClient ids={id} />
 }

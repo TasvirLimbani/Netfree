@@ -4,11 +4,13 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ChevronLeft, ChevronRight, Play, Info } from "lucide-react"
-import { type Movie, fetchTrendingMovies, getImageUrl } from "@/lib/tmdb"
+import { type Movie, MovieDetail, fetchTrendingMovies, getImageUrl } from "@/lib/tmdb"
 import { Button } from "@/components/ui/button"
+import { GENRE_MAP } from "@/lib/genres"
+
 
 export function HeroCarousel() {
-  const [movies, setMovies] = useState<Movie[]>([])
+  const [movies, setMovies] = useState<MovieDetail[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [loading, setLoading] = useState(true)
 
@@ -16,7 +18,7 @@ export function HeroCarousel() {
     const fetchMovies = async () => {
       try {
         const data = await fetchTrendingMovies("week")
-        setMovies(data.results.slice(0, 5))
+        setMovies(data.results.slice(0, 8))
         setLoading(false)
       } catch (error) {
         console.error("Failed to fetch trending movies:", error)
@@ -69,6 +71,18 @@ export function HeroCarousel() {
             {current.title || current.name}
           </h1>
           <p className="text-lg text-gray-300 mb-6 line-clamp-3 animate-slide-left">{current.overview}</p>
+          {current.genre_ids && current.genre_ids.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {current.genre_ids.slice(0, 3).map((id) => (
+                <span
+                  key={id}
+                  className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm"
+                >
+                  {GENRE_MAP[id]}
+                </span>
+              ))}
+            </div>
+          )}
           <div className="flex gap-4 animate-slide-left">
             <Link href={`/movie/${current.id}`}>
               <Button size="lg" className="bg-primary hover:bg-primary/90 text-white gap-2 hover-lift">
@@ -107,9 +121,8 @@ export function HeroCarousel() {
             <button
               key={idx}
               onClick={() => setCurrentIndex(idx)}
-              className={`h-1 transition-all duration-300 ${
-                idx === currentIndex ? "w-8 bg-primary" : "w-2 bg-gray-600 hover:bg-gray-500"
-              }`}
+              className={`h-1 transition-all duration-300 ${idx === currentIndex ? "w-8 bg-primary" : "w-2 bg-gray-600 hover:bg-gray-500"
+                }`}
               aria-label={`Go to slide ${idx + 1}`}
             />
           ))}
