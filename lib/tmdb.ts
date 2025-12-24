@@ -11,9 +11,18 @@ export interface Movie {
   release_date?: string
   first_air_date?: string
   genre_ids?: number[]
+  seasons: Season[]
   media_type?: string
 }
 
+type Season = {
+  id: number
+  name: string
+  poster_path: string
+  episode_count: number
+  vote_average: number
+  season_number: number
+}
 export interface MovieDetail extends Movie {
   genres?: Array<{ id: number; name: string }>
   runtime?: number
@@ -47,10 +56,6 @@ export const searchMovies = async (query: string) => {
 }
 
 export const getMovieDetails = async (id: number, type: "movie" | "tv" = "movie") => {
-  const response = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=ce20e7cf6328f6174905bf11f6e0ea5d`)
-  return response.json()
-}
-export const getTVDetails = async (id: number, type: "movie" | "tv" = "movie") => {
   const response = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=ce20e7cf6328f6174905bf11f6e0ea5d`)
   return response.json()
 }

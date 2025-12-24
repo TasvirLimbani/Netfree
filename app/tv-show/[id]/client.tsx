@@ -9,6 +9,7 @@ import { getMovieDetails, getMovieCredits, getImageUrl, type MovieDetail, fetchT
 import { Button } from "@/components/ui/button"
 import { Play, Share2, Star, Calendar } from "lucide-react"
 import { useRouter } from 'next/navigation'; // App router (Next 13+)
+import Link from "next/link";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const { id } = params
@@ -115,7 +116,6 @@ export default function MovieDetailPage({ ids }: { ids: string }) {
 
   const title = movie.title || movie.name || "Unknown"
   const releaseDate = movie.release_date || movie.first_air_date || "N/A"
-
   return (
     <main className="bg-background min-h-screen">
       <Navbar />
@@ -181,7 +181,7 @@ export default function MovieDetailPage({ ids }: { ids: string }) {
 
             <div className="flex flex-wrap gap-4">
               <Button
-                onClick={() => router.push(`/watch/${movie.id}?type=${type}`)}
+                onClick={() => router.push(`/watch/${movie.id}?session=${movie.number_of_seasons}&type=${type}`)}
                 size="lg"
                 className="bg-primary hover:bg-primary/90 text-white gap-2 hover-lift"
               >
@@ -199,6 +199,53 @@ export default function MovieDetailPage({ ids }: { ids: string }) {
             </div>
           </div>
         </div>
+
+        {/* Seasons */}
+        {movie.seasons?.length > 0 && (
+
+          <div className="mt-16">
+            <h2 className="text-2xl font-bold text-white mb-6">Seasons</h2>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {movie.seasons.map((season) => (
+                <Link
+                  href={`${season.season_number === 0 ? "/movie/" : "/tv-show/"}${season.id}?type=${season.season_number === 0 ? "movie" : "tv"}`}
+                  className="group"
+                >
+                  <div
+                    key={season.id}
+                    className="bg-zinc-900 rounded-lg overflow-hidden hover:scale-105 transition"
+                    onClick={() =>
+                      router.replace(
+                        `/tv-show/${season.id}?type=${type}`
+                      )
+                    }
+
+                  >
+                    <img
+                      src={`https://image.tmdb.org/t/p/w300${season.poster_path}`}
+                      alt={season.name}
+                      className="w-full h-48 object-cover"
+                    />
+
+                    <div className="p-3">
+                      <h3 className="text-white font-semibold text-sm">
+                        {season.name}
+                      </h3>
+                      <p className="text-gray-400 text-xs">
+                        Episodes: {season.episode_count}
+                      </p>
+                      <p className="text-gray-400 text-xs">
+                        ⭐ {season.vote_average}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+        )}
 
         {/* Cast */}
         {credits && credits.cast && credits.cast.length > 0 && (
@@ -243,6 +290,6 @@ export default function MovieDetailPage({ ids }: { ids: string }) {
           </div>
         )}
       </div>
-    </main>
+    </main >
   )
 }

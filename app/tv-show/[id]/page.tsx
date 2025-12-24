@@ -6,7 +6,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
 
   const res = await fetch(
-    `https://api.themoviedb.org/3/movie/${params.id}?api_key=ce20e7cf6328f6174905bf11f6e0ea5d`,
+    `https://api.themoviedb.org/3/tv/${params.id}?api_key=ce20e7cf6328f6174905bf11f6e0ea5d`,
     { cache: "no-store" }
   )
 

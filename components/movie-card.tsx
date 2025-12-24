@@ -12,7 +12,7 @@ interface MovieCardProps {
 
 export function MovieCard({ movie, type = "movie" }: MovieCardProps) {
   const title = movie.title || movie.name || "Unknown"
-  const href = `/movie/${movie.id}?type=${type}`
+  const href = `/${type === "movie" ? "movie" : "tv-show"}/${movie.id}?type=${type}`
 
   return (
     <Link href={href} className="group">

@@ -8,11 +8,12 @@ export default function WatchPage() {
 
   const id = params.id as string;
   const type = searchParams.get("type") || "movie";
+  const session = searchParams.get("session") || "1";
 
   const src =
     type === "movie"
       ? `https://vidfast.pro/movie/${id}`
-      : `https://vidfast.pro/tv/${id}`;
+      : `https://vidfast.pro/tv/${id}/${session}/1`;
 
   return (
     <div style={{ position: "relative", width: "100%", height: "100vh" }}>
