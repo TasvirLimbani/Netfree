@@ -182,7 +182,7 @@ export default function TVShowClient({ tvId }: { tvId: number }) {
                 </Button>
               </Link>
               <ShareMenu title={title} url={typeof window !== "undefined" ? window.location.href : ""} />
-              <FavoriteButton contentId={String(tvId)} contentType="tv" contentTitle={title} />
+              <FavoriteButton movie={tvShow} contentType="tv"  />
             </div>
           </div>
         </div>

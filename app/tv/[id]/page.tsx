@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: TVShowPageProps): Promise<Met
       title: `${title} - NetFree`,
       description: description.substring(0, 160),
       // type: "tv.series",
-      url: `https://netfree.app/tv/${Number(id.split("-")[0])}`,
+      url: `https://netfree-coral.vercel.app//tv/${Number(id.split("-")[0])}`,
       images: [
         {
           url: getImageUrl(tvShow.poster_path),

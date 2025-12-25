@@ -26,6 +26,15 @@ export const metadata: Metadata = {
     "cinema",
     "online movies",
     "HD streaming",
+    "watch online free",
+    "watch free movies",
+    "watch free TV shows",
+    "watch free movies online",
+    "watch free TV shows online",
+    "watch movies online free",
+    "watch TV shows online free",
+    "watch movies free",
+    "watch TV shows free",
   ],
   icons: {
     icon: [
@@ -39,7 +48,7 @@ export const metadata: Metadata = {
     title: "NetFree - Free Movies & TV Shows Streaming Platform",
     description: "Watch unlimited free movies and TV shows in HD quality with personalized recommendations.",
     type: "website",
-    url: "https://netfree.app",
+    url: "https://netfree-coral.vercel.app/",
     siteName: "NetFree",
     images: [
       {
@@ -97,13 +106,13 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "NetFree",
-              url: "https://netfree.app",
+              url: "https://netfree-coral.vercel.app/",
               description: "Free streaming platform for movies and TV shows",
               potentialAction: {
                 "@type": "SearchAction",
                 target: {
                   "@type": "EntryPoint",
-                  urlTemplate: "https://netfree.app/search?q={search_term_string}",
+                  urlTemplate: "https://netfree-coral.vercel.app//search?q={search_term_string}",
                 },
                 query_input: "required name=search_term_string",
               },

@@ -20,7 +20,7 @@ interface MoviesPageProps {
 }
 
 async function fetchMoviesPage(page: number) {
-  const response = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=ce20e7cf6328f6174905bf11f6e0ea5d&page=${page}`)
+  const response = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=ce20e7cf6328f6174905bf11f6e0ea5d&page=${page}`)
   if (!response.ok) throw new Error("Failed to fetch movies")
   return response.json()
 }
@@ -37,9 +37,9 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
         <div className="px-4 md:px-8 max-w-7xl mx-auto mb-8">
           <h1 className="text-4xl font-bold text-white animate-slide-left">All Movies</h1>
           <p className="text-gray-400 mt-2">Explore our entire collection of movies</p>
-          <p className="text-sm text-gray-500 mt-1">
+          {/* <p className="text-sm text-gray-500 mt-1">
             Page {currentPage} of {total_pages}
-          </p>
+          </p> */}
         </div>
 
         <div className="px-4 md:px-8 max-w-7xl mx-auto">

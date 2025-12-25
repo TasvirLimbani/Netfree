@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: MoviePageProps): Promise<Meta
         title: `${title} - Watch Free on NetFree`,
         description: description.substring(0, 160),
         type: "video.movie",
-        url: `https://netfree.app/movie/${Number(id.split("-")[0])}`,
+        url: `https://netfree-coral.vercel.app//movie/${Number(id.split("-")[0])}`,
         images: [
           {
             url: getImageUrl(movieData.poster_path),

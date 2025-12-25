@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
       title: `${title} - NetFree`,
       description: description.substring(0, 160),
       type: "video.movie",
-      url: `https://netfree.app/movie/${id}`,
+      url: `https://netfree-coral.vercel.app//movie/${id}`,
       images: [
         {
           url: getImageUrl(movieData.poster_path),
@@ -219,7 +219,7 @@ export default function MovieDetailPage() {
                 Play Now
               </Button>
               <ShareMenu title={title} url={typeof window !== "undefined" ? window.location.href : ""} />
-              <FavoriteButton contentId={id} contentType={type} contentTitle={title} />
+              <FavoriteButton   movie={movie} contentType={type} />
             </div>
           </div>
         </div>

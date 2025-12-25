@@ -52,7 +52,8 @@ export const addToFavorites = async (contentId: string, contentType: "movie" | "
   if (!user) return
 
   const userDocRef = doc(db, "users", user.uid)
-  const fieldName = contentType === "movie" ? "favoriteMovies" : "favoriteTvShows"
+  const fieldName = "favoriteMovies"
+  // const fieldName = contentType === "movie" ? "favoriteMovies" : "favoriteTvShows"
 
   await updateDoc(userDocRef, {
     [fieldName]: arrayUnion(contentId),
@@ -64,7 +65,8 @@ export const removeFromFavorites = async (contentId: string, contentType: "movie
   if (!user) return
 
   const userDocRef = doc(db, "users", user.uid)
-  const fieldName = contentType === "movie" ? "favoriteMovies" : "favoriteTvShows"
+  const fieldName = "favoriteMovies"
+  // const fieldName = contentType === "movie" ? "favoriteMovies" : "favoriteTvShows"
 
   await updateDoc(userDocRef, {
     [fieldName]: arrayRemove(contentId),

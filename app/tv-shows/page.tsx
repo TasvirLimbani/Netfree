@@ -37,9 +37,9 @@ export default async function TvShowsPage({ searchParams }: TvShowsPageProps) {
         <div className="px-4 md:px-8 max-w-7xl mx-auto mb-8">
           <h1 className="text-4xl font-bold text-white animate-slide-left">TV Shows</h1>
           <p className="text-gray-400 mt-2">Discover the latest and greatest TV shows</p>
-          <p className="text-sm text-gray-500 mt-1">
+          {/* <p className="text-sm text-gray-500 mt-1">
             Page {currentPage} of {total_pages}
-          </p>
+          </p> */}
         </div>
 
         <div className="px-4 md:px-8 max-w-7xl mx-auto">

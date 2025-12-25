@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ChevronLeft, ChevronRight, Play, Info } from "lucide-react"
-import { type Movie, MovieDetail, fetchTrendingMovies, getImageUrl } from "@/lib/tmdb"
+import { type Movie, MovieDetail, fetchTrendingMovies, fetchUpcomingMovies, getImageUrl } from "@/lib/tmdb"
 import { Button } from "@/components/ui/button"
 import { GENRE_MAP } from "@/lib/genres"
 
@@ -17,7 +17,7 @@ export function HeroCarousel() {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const data = await fetchTrendingMovies("week")
+        const data = await fetchUpcomingMovies("week")
         setMovies(data.results.slice(0, 8))
         setLoading(false)
       } catch (error) {
@@ -73,7 +73,7 @@ export function HeroCarousel() {
           <p className="text-lg text-gray-300 mb-6 line-clamp-3 animate-slide-left">{current.overview}</p>
           {current.genre_ids && current.genre_ids.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-6">
-              {current.genre_ids.slice(0, 3).map((id) => (
+              {current.genre_ids.map((id) => (
                 <span
                   key={id}
                   className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm"

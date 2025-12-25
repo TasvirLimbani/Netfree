@@ -27,7 +27,24 @@ export const getImageUrl = (path: string | null, size = "w500") => {
 }
 
 export const fetchTrendingMovies = async (timeWindow: "day" | "week" = "week") => {
-  const response = await fetch(`https://api.themoviedb.org/3/trending/all/${timeWindow}?api_key=ce20e7cf6328f6174905bf11f6e0ea5d&page=1`);
+  const response = await fetch(`https://api.themoviedb.org/3/trending/movie/${timeWindow}?api_key=ce20e7cf6328f6174905bf11f6e0ea5d&page=1`);
+  return response.json();
+}
+export const fetchUpcomingMovies = async (timeWindow: "day" | "week" = "week") => {
+  const response = await fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=ce20e7cf6328f6174905bf11f6e0ea5d`);
+  return response.json();
+}
+export const fetchTopratedMovies = async (timeWindow: "day" | "week" = "week") => {
+  const response = await fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=ce20e7cf6328f6174905bf11f6e0ea5d`);
+  return response.json();
+}
+export const fetchPopularMovies = async (timeWindow: "day" | "week" = "week") => {
+  const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=ce20e7cf6328f6174905bf11f6e0ea5d`);
+  return response.json();
+}
+
+export const fetchDiscoverMovies = async (timeWindow: "day" | "week" = "week") => {
+  const response = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=ce20e7cf6328f6174905bf11f6e0ea5d`);
   return response.json();
 }
 
