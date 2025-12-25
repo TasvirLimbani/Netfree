@@ -27,7 +27,7 @@ export async function generateMetadata({ params, searchParams }: Params): Promis
     `Watch ${title} on NetFree. Stream free movies and TV shows with HD quality. No subscription required.`;
 
   return {
-    title: `${title} - Watch Free on NetFree | Free Streaming Movie`,
+    title: `${title} - Watch Onlien Free | Watch Free on NetFree | Free Streaming Movie`,
     description: description.substring(0, 160),
     keywords: `${title}, watch free, streaming, movie, ${movieData.genres?.map((g: any) => g.name).join(", ")}`,
     openGraph: {
