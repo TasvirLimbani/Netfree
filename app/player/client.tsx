@@ -25,11 +25,11 @@ export default function PlayerClient() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const data = await getMovieDetails(Number(id), type)
+        const data = await getMovieDetails(Number(id.split("-")[0] ), type)
         setContent(data)
 
         if (type === "tv" && data.seasons) {
-          const seasonData = await getSeasonDetails(Number(id), currentSeason)
+          const seasonData = await getSeasonDetails(Number(id.split("-")[0] ), currentSeason)
           setEpisodes(seasonData.episodes || [])
         }
       } catch (error) {
@@ -40,7 +40,7 @@ export default function PlayerClient() {
     }
 
     fetchContent()
-  }, [id, type, currentSeason])
+  }, [Number(id.split("-")[0] ),, type, currentSeason])
 
   if (loading) {
     return (
@@ -67,7 +67,7 @@ export default function PlayerClient() {
       {/* Player */}
       <div className="mb-8 animate-fade-up">
         <VideoPlayer
-          tvId={Number(id)}
+          tvId={Number(id.split("-")[0] )}
           seasonNumber={type === "movie" ? 0 : currentSeason}
           episodeNumber={currentEpisode}
           episodeTitle={type === "movie" ? title : episodes[currentEpisode - 1]?.name || "Episode"}
