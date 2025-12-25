@@ -1,20 +1,22 @@
-"use client";
+"use client"
 
 import { useState, useEffect } from "react"
 import { useParams, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import { Navbar } from "@/components/navbar"
 import { MovieCard } from "@/components/movie-card"
-import { getMovieDetails, getMovieCredits, getImageUrl, type MovieDetail, fetchTrendingMovies, getSimilarMovies } from "@/lib/tmdb"
+import { getMovieDetails, getMovieCredits, getImageUrl, type MovieDetail, fetchTrendingMovies } from "@/lib/tmdb"
 import { Button } from "@/components/ui/button"
-import { Play, Share2, Star, Calendar } from "lucide-react"
-import { useRouter } from 'next/navigation'; // App router (Next 13+)
+import { Play, Star, Calendar } from "lucide-react"
+import { useAuth } from "@/lib/auth-context"
+import { updateContinueWatching, initializeUserPreferences } from "@/lib/user-preferences"
+import { trackContentView, trackWatchTime } from "@/lib/analytics"
+import { FavoriteButton } from "@/components/favorite-button"
+import { ShareMenu } from "@/components/share-menu"
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const { id } = params
-
-  console.log("Id ::::::::::::::::::::: ", id)
-  const movieData = await getMovieDetails(Number(83533), "movie")
+  const movieData = await getMovieDetails(Number(id), "movie")
 
   if (!movieData) {
     return {
@@ -52,36 +54,39 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
     },
   }
 }
-export default function MovieDetailPage({ ids }: { ids: string }) {
-  const router = useRouter() // <-- initialize router
 
+export default function MovieDetailPage() {
   const params = useParams()
   const searchParams = useSearchParams()
   const id = params.id as string
   const type = (searchParams.get("type") || "movie") as "movie" | "tv"
+  const { user } = useAuth()
 
   const [movie, setMovie] = useState<MovieDetail | null>(null)
   const [credits, setCredits] = useState<any>(null)
   const [recommendations, setRecommendations] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [watchStartTime, setWatchStartTime] = useState<number>(0)
+  const [watchProgress, setWatchProgress] = useState(0)
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const movieData = await getMovieDetails(Number(id), type)
-        if (movieData.status_code === 34) {
-          setMovie(null);
+        const movieData = await getMovieDetails(Number(id.split("-")[0]), type)
+        setMovie(movieData)
 
+        if (movieData) {
+          trackContentView(id, type, movieData.title || movieData.name || "Unknown")
+          await initializeUserPreferences()
         }
-        else {
-          setMovie(movieData)
-        }
-        const creditsData = await getMovieCredits(Number(id), type)
+
+        const creditsData = await getMovieCredits(Number(id.split("-")[0]), type)
         setCredits(creditsData)
 
-        // Fetch recommendations
-        const recData = await getSimilarMovies(Number(id), type)
+        const recData = await fetchTrendingMovies("week")
         setRecommendations(recData.results)
+
+        setWatchStartTime(Date.now())
       } catch (error) {
         console.error("Failed to fetch details:", error)
       } finally {
@@ -91,6 +96,21 @@ export default function MovieDetailPage({ ids }: { ids: string }) {
 
     fetchDetails()
   }, [id, type])
+
+  useEffect(() => {
+    return () => {
+      if (watchStartTime > 0) {
+        const watchDuration = Math.round((Date.now() - watchStartTime) / 1000)
+        if (watchDuration > 5) {
+          trackWatchTime(id, watchDuration)
+          if (user && movie) {
+            const progress = Math.min(100, (watchDuration / (movie.runtime ? movie.runtime * 60 : 7200)) * 100)
+            updateContinueWatching(id, movie.title || movie.name || "Unknown", progress, type)
+          }
+        }
+      }
+    }
+  }, [watchStartTime, id, user, movie, type])
 
   if (loading) {
     return (
@@ -107,43 +127,12 @@ export default function MovieDetailPage({ ids }: { ids: string }) {
     )
   }
 
-  "use client"
-
-
   if (!movie) {
-    const router = useRouter()
-
     return (
       <main className="bg-background min-h-screen">
         <Navbar />
-
-        <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
-          <div className="max-w-md w-full text-center bg-muted/40 border border-border rounded-2xl p-8 shadow-lg">
-
-            {/* Icon */}
-            <div className="text-6xl mb-4">🎬</div>
-
-            {/* Title */}
-            <h1 className="text-2xl font-semibold mb-2">
-              Movie Not Found
-            </h1>
-
-            {/* Description */}
-            <p className="text-gray-400 mb-6">
-              The movie you’re looking for doesn’t exist or has been removed.
-            </p>
-
-            {/* Go Back Button */}
-            <button
-              onClick={() => router.back()}
-              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full 
-                       bg-primary text-primary-foreground font-medium 
-                       hover:opacity-90 transition"
-            >
-              ← Go Back
-            </button>
-
-          </div>
+        <div className="pt-20 pb-12 px-4 md:px-8 max-w-7xl mx-auto">
+          <p className="text-gray-400 text-lg">Movie not found</p>
         </div>
       </main>
     )
@@ -156,7 +145,6 @@ export default function MovieDetailPage({ ids }: { ids: string }) {
     <main className="bg-background min-h-screen">
       <Navbar />
 
-      {/* Hero Section */}
       <div className="relative h-96 overflow-hidden pt-16">
         <Image
           src={getImageUrl(movie.backdrop_path, "w1280") || "/placeholder.svg"}
@@ -167,25 +155,22 @@ export default function MovieDetailPage({ ids }: { ids: string }) {
         <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
       </div>
 
-      {/* Content */}
       <div className="px-4 md:px-8 max-w-7xl mx-auto -mt-32 relative z-10 pb-12">
         <div className="flex flex-col md:flex-row gap-8">
-          {/* Poster */}
           <div className="flex-shrink-0">
             <Image
-              src={getImageUrl(movie.poster_path) || "/placeholder.svg"}
+              src={getImageUrl(movie.poster_path) || "/noimagep.png"}
               alt={title}
               width={200}
               height={300}
-              className="rounded-lg shadow-lg"
+              className="rounded-lg shadow-lg hover-lift transition-all duration-300"
             />
           </div>
 
-          {/* Info */}
           <div className="flex-1">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 animate-slide-left">{title}</h1>
 
-            <div className="flex flex-wrap items-center gap-4 mb-6">
+            <div className="flex flex-wrap items-center gap-4 mb-6 animate-fade-up">
               <div className="flex items-center gap-2">
                 <Star className="w-5 h-5 fill-primary text-primary" />
                 <span className="text-2xl font-bold text-white">{(movie.vote_average / 2).toFixed(1)}/5</span>
@@ -204,72 +189,76 @@ export default function MovieDetailPage({ ids }: { ids: string }) {
             </div>
 
             {movie.genres && movie.genres.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-6">
+              <div className="flex flex-wrap gap-2 mb-6 animate-fade-up">
                 {movie.genres.map((genre) => (
-                  <span key={genre.id} className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm">
+                  <span
+                    key={genre.id}
+                    className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm hover-lift transition-all duration-300"
+                  >
                     {genre.name}
                   </span>
                 ))}
               </div>
             )}
 
-            <p className="text-gray-300 text-lg mb-8 leading-relaxed">{movie.overview}</p>
+            <p className="text-gray-300 text-lg mb-8 leading-relaxed text-pretty">{movie.overview}</p>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 animate-slide-bottom">
               <Button
-                onClick={() => router.push(`/watch/${movie.id}?type=${type}`)}
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-white gap-2 hover-lift"
+                className="bg-primary hover:bg-primary/90 text-white gap-2 hover-lift transition-all duration-300"
+                onClick={() => {
+                  if (type === "movie") {
+                    window.location.href = `/player?type=movie&id=${id}`
+                  } else {
+                    window.location.href = `/player?type=tv&id=${id}`
+                  }
+                }}
               >
                 <Play className="w-5 h-5" />
                 Play Now
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-primary text-primary hover:bg-primary/10 gap-2 bg-transparent"
-              >
-                <Share2 className="w-5 h-5" />
-                Share
-              </Button>
+              <ShareMenu title={title} url={typeof window !== "undefined" ? window.location.href : ""} />
+              <FavoriteButton contentId={id} contentType={type} contentTitle={title} />
             </div>
           </div>
         </div>
 
-        {/* Cast */}
         {credits && credits.cast && credits.cast.length > 0 && (
-          <div className="mt-16">
+          <div className="mt-16 animate-fade-up">
             <h2 className="text-2xl font-bold text-white mb-6">Cast</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 justify-items-center">
-              {credits.cast.map((actor: any) => (
-                <div key={actor.id} className="flex flex-col items-center text-center">
-                  <div className="w-[150px] h-[225px] mb-2">
-                    <Image
-                      src={
-                        actor.profile_path
-                          ? getImageUrl(actor.profile_path)
-                          : "https://image.tmdb.org/t/p/original/MIfJmsLZk5laagRw5IxqPvaI5k.jpg"
-                      }
-                      alt={actor.name}
-                      width={150}
-                      height={225}
-                      className="rounded-lg object-cover w-full h-full"
-                    />
-                  </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {credits.cast.map((actor: any, idx: number) => (
+                <div
+                  key={actor.id}
+                  className="rounded-lg pt-3 pb-3 flex flex-col items-center text-center hover-lift transition-all duration-300 animate-fade-scale"
+                  style={{ animationDelay: `${idx * 100}ms` }}
+                >
+                  <Image
+                    src={
+                      actor.profile_path
+                        ? getImageUrl(actor.profile_path)
+                        : "/noimagep.png"
+                    }
+                    alt={actor.name}
+                    width={150}
+                    height={225}
+                    className="rounded-lg mb-2 object-cover"
+                  />
+
                   <p className="text-white font-semibold text-sm">{actor.name}</p>
                   <p className="text-gray-400 text-xs">{actor.character}</p>
                 </div>
+
               ))}
             </div>
           </div>
         )}
 
-
-        {/* Recommendations */}
         {recommendations.length > 0 && (
-          <div className="mt-16">
+          <div className="mt-16 animate-fade-up">
             <h2 className="text-2xl font-bold text-white mb-6">Recommendations</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {recommendations.map((rec, idx) => (
                 <div key={rec.id} className="animate-fade-scale" style={{ animationDelay: `${idx * 50}ms` }}>
                   <MovieCard movie={rec} type={type} />

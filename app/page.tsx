@@ -21,19 +21,16 @@ export const metadata = {
 }
 
 export default async function Home() {
-    const trendingMovies = await fetchTrendingMovies("week");
-    const popularTv = await fetchTrendingTv("week");
-    const topRatedMovies = await fetchTrendingMovies("day");
-  
-    return (
-      <main className="bg-background">
-        <Navbar />
-        <HeroCarousel />
-        <MoviesSection title="Trending Movies This Week"   movies={trendingMovies.results.slice(0, 12)} />
-        <TvShowsSection title="Popular TV Shows" tvShow={popularTv.results} />
-        <MoviesSection title="Top Rated Movies" movies={topRatedMovies.results} />
-      </main>
-    )
-  }
-  
-
+  const trendingMovies = await fetchTrendingMovies("week");
+  const popularTv = await fetchTrendingTv("week");
+  const topRatedMovies = await fetchTrendingMovies("day");
+  return (
+    <main className="bg-background">
+      <Navbar />
+      <HeroCarousel />
+      <MoviesSection title="Trending Movies This Week" movies={trendingMovies.results.slice(0, 12)} />
+      <TvShowsSection title="Popular TV Shows" tvShow={popularTv.results} />
+      <MoviesSection title="Top Rated Movies" movies={topRatedMovies.results}  />
+    </main>
+  )
+}

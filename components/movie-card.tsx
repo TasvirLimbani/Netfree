@@ -12,7 +12,9 @@ interface MovieCardProps {
 
 export function MovieCard({ movie, type = "movie" }: MovieCardProps) {
   const title = movie.title || movie.name || "Unknown"
-  const href = `/${type === "movie" ? "movie" : "tv-show"}/${movie.id}?type=${type}`
+  // const href = `/${type === "movie" ? "movie" : "tv"}/${movie.id}?type=${type}`
+  const href = `/${type === "movie" ? "movie" : "tv"}/${movie.id}-${title.replaceAll(" ", "") }?type=${type}`
+
 
   return (
     <Link href={href} className="group">
@@ -20,7 +22,7 @@ export function MovieCard({ movie, type = "movie" }: MovieCardProps) {
         {/* Poster Image */}
         <div className="relative h-64 md:h-80 w-full overflow-hidden group">
           <Image
-            src={getImageUrl(movie.poster_path) || "/placeholder.svg"}
+            src={movie.poster_path ? getImageUrl(movie.poster_path) : "/noimagep.png"}
             alt={title}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-110"

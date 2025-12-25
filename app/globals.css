@@ -147,6 +147,28 @@
   }
 }
 
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes fadeInScale {
   from {
     opacity: 0;
@@ -155,6 +177,17 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -168,6 +201,25 @@
   }
 }
 
+@keyframes pulse-border {
+  0%,
+  100% {
+    border-color: rgba(22, 160, 133, 0.5);
+  }
+  50% {
+    border-color: rgba(22, 160, 133, 0.8);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
 .animate-slide-left {
   animation: slideInFromLeft 0.6s ease-out;
 }
@@ -176,12 +228,34 @@
   animation: slideInFromRight 0.6s ease-out;
 }
 
+.animate-slide-top {
+  animation: slideInFromTop 0.6s ease-out;
+}
+
+.animate-slide-bottom {
+  animation: slideInFromBottom 0.6s ease-out;
+}
+
 .animate-fade-scale {
   animation: fadeInScale 0.6s ease-out;
 }
 
+.animate-fade-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
 .animate-glow {
   animation: glow 2s ease-in-out infinite;
+}
+
+.animate-pulse-border {
+  animation: pulse-border 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(90deg, transparent, rgba(22, 160, 133, 0.3), transparent);
+  background-size: 1000px 100%;
 }
 
 .bg-gradient-dark {
@@ -195,4 +269,220 @@
 .hover-lift:hover {
   transform: translateY(-4px);
   box-shadow: 0 10px 30px rgba(22, 160, 133, 0.3);
+}
+
+/* Responsive typography */
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  h1 {
+    font-size: 2.25rem;
+  }
+
+  h2 {
+    font-size: 1.875rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  h1 {
+    font-size: 3rem;
+  }
+
+  h2 {
+    font-size: 2.25rem;
+  }
+}
+
+/* Responsive spacing */
+@media (max-width: 640px) {
+  .px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .gap-4 {
+    gap: 1rem;
+  }
+
+  .py-12 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+/* Touch-friendly buttons on mobile */
+@media (hover: none) {
+  button,
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Optimize image loading on mobile */
+@media (max-width: 640px) {
+  img {
+    loading: lazy;
+  }
+}
+
+/* Reduce animations on slower devices */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Dark mode optimizations */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  :root {
+    --primary: #00d9b4;
+    --secondary: #00a885;
+  }
+}
+
+/* Mobile viewport optimizations */
+@media (max-width: 768px) {
+  .hidden {
+    display: none;
+  }
+
+  .sm\:hidden {
+    display: none;
+  }
+
+  .md\:hidden {
+    display: none;
+  }
+
+  .md\:flex {
+    display: flex;
+  }
+
+  .md\:grid {
+    display: grid;
+  }
+}
+
+/* Landscape orientation optimization */
+@media (orientation: landscape) and (max-height: 600px) {
+  .hero-section {
+    height: 100vh;
+  }
+
+  nav {
+    padding: 0.5rem 0;
+  }
+}
+
+/* Large screens optimization */
+@media (min-width: 1536px) {
+  .max-w-7xl {
+    max-width: 1280px;
+  }
+
+  .px-4 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Fluid typography scaling */
+@media (min-width: 640px) {
+  body {
+    font-size: clamp(14px, 2vw, 18px);
+  }
+
+  h1 {
+    font-size: clamp(1.75rem, 5vw, 3rem);
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+  }
+}
+
+/* Grid responsive optimization */
+@media (max-width: 640px) {
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid-cols-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid-cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid-cols-6 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  gap {
+    gap: 0.5rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .grid-cols-6 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .grid-cols-4 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Smooth scrolling and focus states */
+html {
+  scroll-behavior: smooth;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Accessibility improvements */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }

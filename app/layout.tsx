@@ -3,9 +3,8 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { AuthProvider } from "@/lib/auth-context"
+import { PageViewTracker } from "@/components/page-view-tracker"
 import "./globals.css"
-import DisableInspect from "@/components/DisableInspect"
-import AdBlockPopup from "@/components/AdBlockPopup"
 
 const geist = Geist({ subsets: ["latin"] })
 const geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -65,9 +64,9 @@ export const metadata: Metadata = {
     "max-video-preview": -1,
   },
   alternates: {
-    canonical: "https://netfree.app",
+    canonical: "https://netfree-coral.vercel.app",
   },
-  generator: 'v0.app'
+  generator: 'Radhe Software Solutions',
 }
 
 export const viewport = {
@@ -91,7 +90,6 @@ export default function RootLayout({
         <meta name="robots" content="index, follow" />
         <meta name="language" content="English" />
         <meta name="author" content="NetFree" />
-        <link rel="manifest" href="/manifest.json" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -114,10 +112,11 @@ export default function RootLayout({
         />
       </head>
       <body className={`${geist.className} antialiased bg-background`}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <PageViewTracker />
+          {children}
+        </AuthProvider>
         <Analytics />
-        <AdBlockPopup />
-        <DisableInspect />
       </body>
     </html>
   )

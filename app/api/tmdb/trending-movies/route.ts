@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const response = await fetch(`${TMDB_BASE_URL}/trending/all/${timeWindow}?api_key=${TMDB_API_KEY}&page=${page}`, {
+    const response = await fetch(`${TMDB_BASE_URL}/trending/movie/${timeWindow}?api_key=${TMDB_API_KEY}&page=${page}`, {
       next: { revalidate: 60 * 60 },
     })
     const data = await response.json()

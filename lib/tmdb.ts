@@ -11,18 +11,9 @@ export interface Movie {
   release_date?: string
   first_air_date?: string
   genre_ids?: number[]
-  seasons: Season[]
   media_type?: string
 }
 
-type Season = {
-  id: number
-  name: string
-  poster_path: string
-  episode_count: number
-  vote_average: number
-  season_number: number
-}
 export interface MovieDetail extends Movie {
   genres?: Array<{ id: number; name: string }>
   runtime?: number
@@ -31,19 +22,14 @@ export interface MovieDetail extends Movie {
 }
 
 export const getImageUrl = (path: string | null, size = "w500") => {
-  if (!path) return "/placeholder.svg"
+  if (!path) return "/noimagep.png"
   return `https://image.tmdb.org/t/p/${size}${path}`
 }
-
-// tmdb.ts
-// const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export const fetchTrendingMovies = async (timeWindow: "day" | "week" = "week") => {
   const response = await fetch(`https://api.themoviedb.org/3/trending/all/${timeWindow}?api_key=ce20e7cf6328f6174905bf11f6e0ea5d&page=1`);
   return response.json();
-};
-
-
+}
 
 export const fetchTrendingTv = async (timeWindow: "day" | "week" = "week") => {
   const response = await fetch(`https://api.themoviedb.org/3/tv/popular?api_key=ce20e7cf6328f6174905bf11f6e0ea5d`)
@@ -64,6 +50,19 @@ export const getMovieCredits = async (id: number, type: "movie" | "tv" = "movie"
   const response = await fetch(`https://api.themoviedb.org/3/${type}/${id}/credits?api_key=ce20e7cf6328f6174905bf11f6e0ea5d`)
   return response.json()
 }
+
+export const getSeasonDetails = async (tvId: number, seasonNumber: number) => {
+  const response = await fetch(`/api/tmdb/seasons?tvId=${tvId}&seasonNumber=${seasonNumber}`)
+  return response.json()
+}
+
+export const getEpisodeDetails = async (tvId: number, seasonNumber: number, episodeNumber: number) => {
+  const response = await fetch(
+    `/api/tmdb/episodes?tvId=${tvId}&seasonNumber=${seasonNumber}&episodeNumber=${episodeNumber}`,
+  )
+  return response.json()
+}
+
 export const getTVCredits = async (id: number, type: "movie" | "tv" = "movie") => {
   const response = await fetch(`https://api.themoviedb.org/3/${type}/${id}/credits?api_key=ce20e7cf6328f6174905bf11f6e0ea5d`)
   return response.json()

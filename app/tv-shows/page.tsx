@@ -20,8 +20,8 @@ interface TvShowsPageProps {
 }
 
 async function fetchTvShowsPage(page: number) {
-  const response = await fetch(`https://api.themoviedb.org/3/tv/popular?api_key=ce20e7cf6328f6174905bf11f6e0ea5d&page=${page}`)
-  if (!response.ok) throw new Error("Failed to fetch TV shows")
+  const response = await fetch(`https://api.themoviedb.org/3/tv/popular?api_key=ce20e7cf6328f6174905bf11f6e0ea5d&timeWindow=week&page=${page}`)
+  if (!response.ok) throw  Error("Failed to fetch TV shows")
   return response.json()
 }
 
