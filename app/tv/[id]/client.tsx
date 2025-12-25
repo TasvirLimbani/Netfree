@@ -172,7 +172,7 @@ export default function TVShowClient({ tvId }: { tvId: number }) {
             <p className="text-gray-300 text-lg mb-8 leading-relaxed text-pretty">{tvShow?.overview}</p>
 
             <div className="flex flex-wrap gap-4 animate-slide-bottom">
-              <Link href={`/player?type=tv&id=${tvId}&season=${selectedSeason?.season_number || 1}&episode=1`}>
+              <Link href={`/player?type=tv&id=${encodeURIComponent(tvId)}&season=${selectedSeason?.season_number || 1}&episode=1`}>
                 <Button
                   size="lg"
                   className="bg-primary hover:bg-primary/90 text-white gap-2 hover-lift transition-all duration-300"
@@ -310,7 +310,7 @@ export default function TVShowClient({ tvId }: { tvId: number }) {
               {episodes.map((episode, idx) => (
                 <Link
                   key={episode.episode_number}
-                  href={`/player?type=tv&id=${tvId}&season=${selectedSeason.season_number}&episode=${episode.episode_number}`}
+                  href={`/player?type=tv&id=${encodeURIComponent(tvId)}&season=${selectedSeason.season_number}&episode=${episode.episode_number}`}
                 >
                   <div
                     className="group cursor-pointer bg-card/50 hover:bg-card border border-border hover:border-primary/50 rounded-lg overflow-hidden transition-all duration-300 hover-lift animate-fade-scale flex flex-col md:flex-row gap-4 p-4"

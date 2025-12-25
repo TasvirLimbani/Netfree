@@ -84,13 +84,13 @@ export function HeroCarousel() {
             </div>
           )}
           <div className="flex gap-4 animate-slide-left">
-            <Link href={`/movie/${current.id}`}>
+            <Link href={`/movie/${current.id}-${current.title.replaceAll(" ", "")}`}>
               <Button size="lg" className="bg-primary hover:bg-primary/90 text-white gap-2 hover-lift">
                 <Play className="w-5 h-5" />
                 Watch Now
               </Button>
             </Link>
-            <Link href={`/movie/${current.id}`}>
+            <Link href={`/movie/${current.id}-${current.title.replaceAll(" ", "")}`}>
               <Button
                 size="lg"
                 variant="outline"
