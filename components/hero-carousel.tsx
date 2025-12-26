@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ChevronLeft, ChevronRight, Play, Info } from "lucide-react"
-import { type Movie, fetchTrendingMovies, getImageUrl } from "@/lib/tmdb"
+import { type Movie, fetchTrendingMovies, fetchUpcomingMovies, getImageUrl } from "@/lib/tmdb"
 import { Button } from "@/components/ui/button"
 
 export function HeroCarousel() {
@@ -15,7 +15,7 @@ export function HeroCarousel() {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const data = await fetchTrendingMovies("week")
+        const data = await fetchUpcomingMovies("week")
         setMovies(data.results.slice(0, 5))
         setLoading(false)
       } catch (error) {
