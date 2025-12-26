@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   description:
     "Watch unlimited free movies and TV shows on NetFree. Stream thousands of movies and TV series with HD quality. No subscription required. Personalized recommendations and easy search.",
   keywords: [
+    "netfree",
+    "netfree movies",
+    "netfree TV shows",
+    "netfree cc",
     "free movies",
     "free TV shows",
     "streaming",
