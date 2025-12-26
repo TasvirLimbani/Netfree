@@ -3,7 +3,6 @@ import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { AuthProvider } from "@/lib/auth-context"
-import { PageViewTracker } from "@/components/page-view-tracker"
 import "./globals.css"
 
 const geist = Geist({ subsets: ["latin"] })
@@ -99,6 +98,7 @@ export default function RootLayout({
         <meta name="robots" content="index, follow" />
         <meta name="language" content="English" />
         <meta name="author" content="NetFree" />
+        <link rel="manifest" href="/manifest.json" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -106,13 +106,13 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "NetFree",
-              url: "https://netfree-coral.vercel.app/",
+              url: "https://netfree.app",
               description: "Free streaming platform for movies and TV shows",
               potentialAction: {
                 "@type": "SearchAction",
                 target: {
                   "@type": "EntryPoint",
-                  urlTemplate: "https://netfree-coral.vercel.app//search?q={search_term_string}",
+                  urlTemplate: "https://netfree.app/search?q={search_term_string}",
                 },
                 query_input: "required name=search_term_string",
               },
@@ -121,10 +121,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${geist.className} antialiased bg-background`}>
-        <AuthProvider>
-          <PageViewTracker />
-          {children}
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
         <Analytics />
       </body>
     </html>

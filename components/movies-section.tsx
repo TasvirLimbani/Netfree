@@ -17,7 +17,7 @@ export function MoviesSection({ title, movies }: MoviesSectionProps) {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        setMovies(movies)
+        setMovies(movies.slice(0, 12))
         setLoading(false)
       } catch (error) {
         console.error("Failed to fetch movies:", error)
@@ -34,7 +34,7 @@ export function MoviesSection({ title, movies }: MoviesSectionProps) {
         <h2 className="text-3xl font-bold text-white mb-8 animate-slide-left">{title}</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-64 bg-muted rounded-lg animate-shimmer"></div>
+            <div key={i} className="h-64 bg-muted rounded-lg animate-pulse"></div>
           ))}
         </div>
       </section>
@@ -43,20 +43,10 @@ export function MoviesSection({ title, movies }: MoviesSectionProps) {
 
   return (
     <section className="py-12 px-4 md:px-8 max-w-7xl mx-auto">
-      <div className="mb-8 animate-slide-left">
-        <h2 className="text-3xl font-bold text-white">{title}</h2>
-        <div className="h-1 w-12 bg-primary rounded-full mt-2 animate-pulse"></div>
-      </div>
+      <h2 className="text-3xl font-bold text-white mb-8 animate-slide-left">{title}</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {movie.map((movie, idx) => (
-          <div
-            key={movie.id}
-            className="animate-fade-scale"
-            style={{
-              animationDelay: `${idx * 50}ms`,
-              animation: `fadeInScale 0.6s ease-out ${idx * 50}ms both`,
-            }}
-          >
+        {movies.map((movie, idx) => (
+          <div key={movie.id} className="animate-fade-scale" style={{ animationDelay: `${idx * 50}ms` }}>
             <MovieCard movie={movie} type="movie" />
           </div>
         ))}

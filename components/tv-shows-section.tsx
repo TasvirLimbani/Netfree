@@ -17,6 +17,7 @@ export function TvShowsSection({ title, tvShow }: TvShowsSectionProps) {
   useEffect(() => {
     const fetchShows = async () => {
       try {
+
         setShows(tvShow)
         setLoading(false)
       } catch (error) {

@@ -54,7 +54,7 @@ export function VideoPlayer({
       <div className="relative bg-black aspect-video">
         <iframe
           id="video-player-iframe"
-          src={iframeUrl}
+          src={`${iframeUrl}?theme=16A085&autoPlay=true`}
           className="w-full h-full border-0"
           allowFullScreen
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

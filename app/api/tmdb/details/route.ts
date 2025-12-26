@@ -15,18 +15,12 @@ export async function GET(request: Request) {
   }
 
   try {
-    const response = await fetch(`${TMDB_BASE_URL}/${type}/${id}?api_key=${TMDB_API_KEY}&language=en-US`, {
+    const response = await fetch(`${TMDB_BASE_URL}/${type}/${id}?api_key=${TMDB_API_KEY}`, {
       next: { revalidate: 60 * 60 },
     })
     const data = await response.json()
-
-    if (!response.ok || data.success === false || data.status_code) {
-      return new Response(JSON.stringify(data), { status: response.status })
-    }
-
     return new Response(JSON.stringify(data), { status: 200 })
   } catch (error) {
-    console.error("[v0] TMDB API Error:", error)
-    return new Response(JSON.stringify({ error: "Failed to fetch details" }), { status: 500 })
+    return new Response(JSON.stringify({ error: "Failed to fetch movie details" }), { status: 500 })
   }
 }

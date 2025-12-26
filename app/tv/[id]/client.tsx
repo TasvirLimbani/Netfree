@@ -12,7 +12,6 @@ import { useAuth } from "@/lib/auth-context"
 import Link from "next/link"
 import { ShareMenu } from "@/components/share-menu"
 import { MovieCard } from "@/components/movie-card"
-import { Navbar } from "@/components/navbar"
 
 interface Season {
   season_number: number
