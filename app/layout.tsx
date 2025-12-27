@@ -5,7 +5,6 @@ import { Analytics } from "@vercel/analytics/next"
 import { AuthProvider } from "@/lib/auth-context"
 import "./globals.css"
 import AdBlockDetector from "@/components/AdblockDetector"
-import PopUnderAd from "@/components/PopUnderAd"
 
 const geist = Geist({ subsets: ["latin"] })
 const geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -104,8 +103,8 @@ export default function RootLayout({
         <meta name="robots" content="index, follow" />
         <meta name="language" content="English" />
         <meta name="author" content="NetFree" />
-        <meta name="7searchppc" content="5ce55c744766528f3b33a2b5f1b44f27"/>
         <link rel="manifest" href="/manifest.json" />
+        
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -126,12 +125,12 @@ export default function RootLayout({
             }),
           }}
         />
+        <script>(function(s){s.dataset.zone='10382272',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
         
       </head>
       <body className={`${geist.className} antialiased bg-background`}>
         <AuthProvider>{children}</AuthProvider>
         <AdBlockDetector />
-        <PopUnderAd />
         <Analytics />
       </body>
     </html>
