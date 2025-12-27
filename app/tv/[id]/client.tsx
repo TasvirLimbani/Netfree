@@ -12,7 +12,7 @@ import { useAuth } from "@/lib/auth-context"
 import Link from "next/link"
 import { ShareMenu } from "@/components/share-menu"
 import { MovieCard } from "@/components/movie-card"
-import BannerAd from "@/components/BannerAd"
+import NativeAd from "@/components/NativeAd"
 
 interface Season {
   season_number: number
@@ -419,10 +419,8 @@ export default function TVShowClient({ tvId }: { tvId: number }) {
           </div>
         </div>
       )}
-        {/* 🔥 Banner Ad */}
-        <div className="my-6 flex justify-center">
-          <BannerAd />
-        </div>
+      <NativeAd />
+
       <div className="px-4 md:px-8 max-w-7xl mx-auto -mt-32 relative z-10 pb-12">
         {credits && credits.cast && credits.cast.length > 0 && (
           <div className="mt-40 animate-fade-up">
@@ -477,10 +475,7 @@ export default function TVShowClient({ tvId }: { tvId: number }) {
             </div>
           </div>
         )}
-        {/* 🔥 Banner Ad */}
-        <div className="my-6 flex justify-center">
-          <BannerAd />
-        </div>
+        <NativeAd />
         {recommendations.length > 0 && (
           <div className="mt-16 animate-fade-up">
             <h2 className="text-2xl font-bold text-white mb-6">Recommendations</h2>
