@@ -102,6 +102,7 @@ export default function RootLayout({
         <meta name="robots" content="index, follow" />
         <meta name="language" content="English" />
         <meta name="author" content="NetFree" />
+        <meta name="7searchppc" content="5ce55c744766528f3b33a2b5f1b44f27"/>
         <link rel="manifest" href="/manifest.json" />
         <script
           type="application/ld+json"
