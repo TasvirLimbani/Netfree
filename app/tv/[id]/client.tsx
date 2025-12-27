@@ -304,10 +304,6 @@ export default function TVShowClient({ tvId }: { tvId: number }) {
                 Next Season →
               </button>
             </div>
-            {/* 🔥 Banner Ad */}
-            <div className="my-6 flex justify-center">
-              <BannerAd />
-            </div>
             {/* Episodes List */}
             <div className="space-y-4">
               {episodes.map((episode, idx) => (
@@ -423,10 +419,10 @@ export default function TVShowClient({ tvId }: { tvId: number }) {
           </div>
         </div>
       )}
-      {/* 🔥 Banner Ad */}
-      <div className="my-6 flex justify-center">
-        <BannerAd />
-      </div>
+        {/* 🔥 Banner Ad */}
+        <div className="my-6 flex justify-center">
+          <BannerAd />
+        </div>
       <div className="px-4 md:px-8 max-w-7xl mx-auto -mt-32 relative z-10 pb-12">
         {credits && credits.cast && credits.cast.length > 0 && (
           <div className="mt-40 animate-fade-up">
