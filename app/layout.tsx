@@ -104,7 +104,7 @@ export default function RootLayout({
         <meta name="language" content="English" />
         <meta name="author" content="NetFree" />
         <link rel="manifest" href="/manifest.json" />
-        
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -125,8 +125,15 @@ export default function RootLayout({
             }),
           }}
         />
-        <script>(function(s){s.dataset.zone='10382272',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-        
+        <script
+          id="ad-script"
+          dangerouslySetInnerHTML={{
+            __html: `
+             (function(s){s.dataset.zone='10382272',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+            `,
+          }}
+        />
+
       </head>
       <body className={`${geist.className} antialiased bg-background`}>
         <AuthProvider>{children}</AuthProvider>
