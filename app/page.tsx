@@ -33,7 +33,7 @@ export default async function Home() {
       <Navbar />
       <HeroCarousel />
       {/* 🔥 Banner Ad */}
-      <div className="my-6 flex justify-center">
+      <div className="my-8">
         <BannerAd />
       </div>
       <MoviesSection title="Trending Movies" movies={trendingMovies.results} />
