@@ -12,6 +12,7 @@ import { useAuth } from "@/lib/auth-context"
 import Link from "next/link"
 import { ShareMenu } from "@/components/share-menu"
 import { MovieCard } from "@/components/movie-card"
+import BannerAd from "@/components/BannerAd"
 
 interface Season {
   season_number: number
@@ -181,7 +182,7 @@ export default function TVShowClient({ tvId }: { tvId: number }) {
                 </Button>
               </Link>
               <ShareMenu title={title} url={typeof window !== "undefined" ? window.location.href : ""} />
-              <FavoriteButton movie={tvShow} contentType="tv"  />
+              <FavoriteButton movie={tvShow} contentType="tv" />
             </div>
           </div>
         </div>
@@ -303,7 +304,10 @@ export default function TVShowClient({ tvId }: { tvId: number }) {
                 Next Season →
               </button>
             </div>
-
+            {/* 🔥 Banner Ad */}
+            <div className="my-6 flex justify-center">
+              <BannerAd />
+            </div>
             {/* Episodes List */}
             <div className="space-y-4">
               {episodes.map((episode, idx) => (
@@ -419,7 +423,10 @@ export default function TVShowClient({ tvId }: { tvId: number }) {
           </div>
         </div>
       )}
-
+      {/* 🔥 Banner Ad */}
+      <div className="my-6 flex justify-center">
+        <BannerAd />
+      </div>
       <div className="px-4 md:px-8 max-w-7xl mx-auto -mt-32 relative z-10 pb-12">
         {credits && credits.cast && credits.cast.length > 0 && (
           <div className="mt-40 animate-fade-up">
@@ -474,7 +481,10 @@ export default function TVShowClient({ tvId }: { tvId: number }) {
             </div>
           </div>
         )}
-
+        {/* 🔥 Banner Ad */}
+        <div className="my-6 flex justify-center">
+          <BannerAd />
+        </div>
         {recommendations.length > 0 && (
           <div className="mt-16 animate-fade-up">
             <h2 className="text-2xl font-bold text-white mb-6">Recommendations</h2>

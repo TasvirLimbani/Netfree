@@ -13,6 +13,7 @@ import { updateContinueWatching, initializeUserPreferences } from "@/lib/user-pr
 import { trackContentView, trackWatchTime } from "@/lib/analytics"
 import { FavoriteButton } from "@/components/favorite-button"
 import { ShareMenu } from "@/components/share-menu"
+import BannerAd from "@/components/BannerAd"
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const { id } = params
@@ -219,11 +220,14 @@ export default function MovieDetailPage() {
                 Play Now
               </Button>
               <ShareMenu title={title} url={typeof window !== "undefined" ? window.location.href : ""} />
-              <FavoriteButton   movie={movie} contentType={type} />
+              <FavoriteButton movie={movie} contentType={type} />
             </div>
           </div>
         </div>
-
+        {/* 🔥 Banner Ad */}
+        <div className="my-6 flex justify-center">
+          <BannerAd />
+        </div>
         {credits && credits.cast && credits.cast.length > 0 && (
           <div className="mt-16 animate-fade-up">
             <h2 className="text-2xl font-bold text-white mb-6">Cast</h2>
@@ -254,7 +258,10 @@ export default function MovieDetailPage() {
             </div>
           </div>
         )}
-
+        {/* 🔥 Banner Ad */}
+        <div className="my-6 flex justify-center">
+          <BannerAd />
+        </div>
         {recommendations.length > 0 && (
           <div className="mt-16 animate-fade-up">
             <h2 className="text-2xl font-bold text-white mb-6">Recommendations</h2>
