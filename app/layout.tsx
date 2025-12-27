@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { AuthProvider } from "@/lib/auth-context"
 import "./globals.css"
+import AdBlockDetector from "@/components/AdblockDetector"
 
 const geist = Geist({ subsets: ["latin"] })
 const geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -127,6 +128,7 @@ export default function RootLayout({
       </head>
       <body className={`${geist.className} antialiased bg-background`}>
         <AuthProvider>{children}</AuthProvider>
+        <AdBlockDetector />
         <Analytics />
       </body>
     </html>
