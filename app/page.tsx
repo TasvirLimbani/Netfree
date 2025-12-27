@@ -3,8 +3,6 @@ import { HeroCarousel } from "@/components/hero-carousel"
 import { MoviesSection } from "@/components/movies-section"
 import { TvShowsSection } from "@/components/tv-shows-section"
 import { fetchDiscoverMovies, fetchPopularMovies, fetchTopratedMovies, fetchTrendingMovies, fetchTrendingTv, fetchUpcomingMovies } from "@/lib/tmdb"
-import BannerAd from "@/components/BannerAd"
-import NativeAd from "@/components/NativeAd"
 
 export const metadata = {
   title: "NetFree - Watch Free Movies & TV Shows Online | Watch Online Free | Free Streaming",
@@ -33,7 +31,6 @@ export default async function Home() {
     <main className="bg-background">
       <Navbar />
       <HeroCarousel />
-      <NativeAd />
       <MoviesSection title="Trending Movies" movies={trendingMovies.results} />
       <MoviesSection title="Upcoming Movies" movies={upcomingMovies.results} />
       <MoviesSection title="Popular Movies" movies={popularMovies.results} />
