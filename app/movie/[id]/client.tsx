@@ -210,8 +210,18 @@ export default function MovieDetailPage() {
                 className="bg-primary hover:bg-primary/90 text-white gap-2 hover-lift transition-all duration-300"
                 onClick={() => {
                   if (type === "movie") {
+                    window.open(
+                      "https://otieu.com/4/10402681",
+                      "_blank",
+                      "noopener,noreferrer"
+                    )
                     window.location.href = `/player?type=movie&id=${encodeURIComponent(id)}`
                   } else {
+                    window.open(
+                      "https://otieu.com/4/10402681",
+                      "_blank",
+                      "noopener,noreferrer"
+                    )
                     window.location.href = `/player?type=tv&id=${encodeURIComponent(id)}`
                   }
                 }}

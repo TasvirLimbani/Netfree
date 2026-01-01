@@ -4,6 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Star } from "lucide-react"
 import { type Movie, getImageUrl } from "@/lib/tmdb"
+import { useRouter } from "next/navigation"
 
 interface MovieCardProps {
   movie: Movie
@@ -11,13 +12,25 @@ interface MovieCardProps {
 }
 
 export function MovieCard({ movie, type = "movie" }: MovieCardProps) {
+  const router = useRouter();
   const title = movie.title || movie.name || "Unknown"
   // const href = `/${type === "movie" ? "movie" : "tv"}/${movie.id}?type=${type}`
-  const href = `/${type === "movie" ? "movie" : "tv"}/${movie.id}-${title.replaceAll(" ", "") }?type=${type}`
+  const href = `/${type === "movie" ? "movie" : "tv"}/${movie.id}-${title.replaceAll(" ", "")}?type=${type}`
 
+  const handleClick = () => {
+    // open ad first
+    window.open(
+      "https://otieu.com/4/10402681",
+      "_blank",
+      "noopener,noreferrer"
+    )
+
+    // then navigate
+    router.push(href)
+  }
 
   return (
-    <Link href={href} className="group">
+    <div onClick={handleClick} className="group">
       <div className="relative overflow-hidden rounded-lg bg-card hover-lift">
         {/* Poster Image */}
         <div className="relative h-64 md:h-80 w-full overflow-hidden group">
@@ -52,6 +65,6 @@ export function MovieCard({ movie, type = "movie" }: MovieCardProps) {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   )
 }

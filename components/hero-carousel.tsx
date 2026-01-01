@@ -6,11 +6,13 @@ import Link from "next/link"
 import { ChevronLeft, ChevronRight, Play, Info } from "lucide-react"
 import { type Movie, fetchTrendingMovies, fetchUpcomingMovies, getImageUrl } from "@/lib/tmdb"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 
 export function HeroCarousel() {
   const [movies, setMovies] = useState<Movie[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [loading, setLoading] = useState(true)
+  const router = useRouter();
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -46,7 +48,15 @@ export function HeroCarousel() {
   }
 
   const current = movies[currentIndex]
+  const handleClick = (href: string) => {
+    window.open(
+      "https://otieu.com/4/10402681",
+      "_blank",
+      "noopener,noreferrer"
+    )
 
+    router.push(href)
+  }
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background Image with Overlay */}
@@ -70,13 +80,13 @@ export function HeroCarousel() {
           </h1>
           <p className="text-lg text-gray-300 mb-6 line-clamp-3 animate-slide-left">{current.overview}</p>
           <div className="flex gap-4 animate-slide-left">
-            <Link href={`/movie/${current.id}-${current.title.replaceAll(" ", "")}`}>
+            <div onClick={() => handleClick(`/movie/${current.id}-${current.title.replaceAll(" ", "")}`)}>
               <Button size="lg" className="bg-primary hover:bg-primary/90 text-white gap-2 hover-lift">
                 <Play className="w-5 h-5" />
                 Watch Now
               </Button>
-            </Link>
-            <Link href={`/movie/${current.id}-${current.title.replaceAll(" ", "")}`}>
+            </div>
+            <div onClick={() => handleClick(`/movie/${current.id}-${current.title.replaceAll(" ", "")}`)}>
               <Button
                 size="lg"
                 variant="outline"
@@ -85,7 +95,7 @@ export function HeroCarousel() {
                 <Info className="w-5 h-5" />
                 More Info
               </Button>
-            </Link>
+            </div>
           </div>
 
           {/* Rating */}
