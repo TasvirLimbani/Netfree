@@ -125,14 +125,14 @@ export default function RootLayout({
             }),
           }}
         />
-        {/* <script
+        <script
           id="ad-script"
           dangerouslySetInnerHTML={{
             __html: `
              (function(s){s.dataset.zone='10382272',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
             `,
           }}
-        /> */}
+        />
 
       </head>
       <body className={`${geist.className} antialiased bg-background`}>
